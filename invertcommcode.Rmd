@@ -1,0 +1,48 @@
+---
+title: "Jennings Invertrbrate Community"
+author: "Colleen Cosgrove"
+date: "4 October 2018"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+#SET-UP
+
+#smartbind in gtools can combine datasets
+library(gtools)
+
+##Load invert community files and merge them into one csv file.
+date4=read.csv("C:/Users/Colleen/Dropbox/Jennings Invertebrates/beerbottles_10.15.16.csv")
+date4[is.na(date4)]<-0
+date4=date4[c(1:93),c(1:129)]
+date3=read.csv("C:/Users/Colleen/Dropbox/Jennings Invertebrates/beerbottles_8.10.16.csv")
+date3[is.na(date3)]<-0
+date3=date3[c(1:95),c(1:115)]
+date2=read.csv("C:/Users/Colleen/Dropbox/Jennings Invertebrates/beerbottles_5.15.16.csv")
+date2[is.na(date2)]<-0
+date2=date2[c(1:95),c(1:117)]
+date1=read.csv("C:/Users/Colleen/Dropbox/Jennings Invertebrates/beerbottles_10.6.15.csv")
+date1[is.na(date1)]<-0
+date1=date1[c(1:91),c(1:80)]
+colnames(date1)
+
+commdata=smartbind(date1,date2,date3,date4)
+write.csv(commdata)
+
+#Once datasets are combined, check to make sure no misspellings in col names
+colnames(commdata)
+
+#remove any NAs
+
+
+````
+
+```{r}
+
+````
+
