@@ -10,8 +10,9 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-```{r}
-#SET-UP
+```{r combine datasets}
+#Combine the four individual CSVs from each sample date
+#Note to self: never do in a new tab what you can do in a new column...
 
 #smartbind in gtools can combine datasets
 library(gtools)
@@ -38,11 +39,73 @@ write.csv(commdata)
 colnames(commdata)
 
 #remove any NAs
+is.na(commdata[,1])
+#91,186,281,374 = rows with all NA's
+commdata=commdata[-c(91,186,281,374),]
+commdata[is.na(commdata)]<-0
+is.na(commdata)
+
+write.csv(commdata,"invertcommdata.csv")
+```
+
+For the poster:
+1. Totals by ecosystem, data
+2. Gamma diversity between ecosystems
+3. RDA
+4. Can we show diversity by Kriging???
 
 
+```{r Load data}
+#SET UP
+
+#Load Data
+commdata=read.csv("C:/Users/Colleen/OneDrive/Documents/School/Research/Data/Inverts/invertcomm/invertcommdata.csv", header=T, row.names=1)
+treedata=read.csv("C:/Users/Colleen/Dropbox/Jennings 2016/New Adult Basal Area.csv")
+soildata=read.csv("C:/Users/Colleen/OneDrive/Documents/School/Grad School/SpatialStats/soil data May 08 for tree plots.csv")
+treedata[is.na(treedata)] <- 0
+treedata=treedata[treedata$ecosys!="S",] #Remove the stream plots -- Will need to put these back in when I fix the commdata$ecosystem columns.
+
+library(vegan)
+```
+
+```{r Totals}
+#General summation and graph by date
+sum(commdata$Total) #Total=99517 individuals
+plot(commdata$Total~commdata$Date) #Most individuals in falls
+dateordered=ordered(commdata$Date, levels = c("10.6.15","5.5.16","8.10.16","10.15.16"))
+sumplot=boxplot(commdata$Total~dateordered, xlab="Date", ylab="Average Site Sum")
+
+
+plot(commdata$Total~commdata$Habitat, xlab="Ecosystem", ylab="Average Ecosystem Sum")
+
+#abundance by date and ecosystem
+abund=aov(commdata$Total~commdata$Habitat*commdata$Date)
+summary(abund)
+plot(abund)
+shapiro.test(commdata$Total)
+#shapiro.test is super non-normal, sqrt transform
+sqtot=sqrt(commdata$Total)
+abund1=aov(sqtot~commdata$Habitat*commdata$Date)
+summary(abund1)
+plot(abund1)
+shapiro.test(sqtot)
+```
+
+```{r Diversity}
+#Gamma diversity between ecosystems
+H=diversity(commdata, index="shannon")
+
+gammadiv=with(commdata, tapply(specnumber(commdata),Habitat, mean))
 ````
 
-```{r}
+```{r RDA}
+#RDA analysis
+dim(commdata)
+colnames(commdata)
 
+comm.rowsums=apply(commdata[,5:167],1,sum)
+tree.hel=tree.ringsum
+tree.hel[,10:43]=tree.hel[,10:43]/tree.rowsums
+tree.hel[,10:43]=sqrt(tree.hel[,10:43])
 ````
 
