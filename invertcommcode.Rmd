@@ -45,10 +45,10 @@ commdata=commdata[-c(91,186,281,374),]
 commdata[is.na(commdata)]<-0
 is.na(commdata)
 
-write.csv(commdata,"invertcommdata.csv")
+write.csv(commdata,"invertcommdata2.csv")
 ```
 
-For the poster:
+For the EntSA poster:
 1. Totals by ecosystem, data
 2. Gamma diversity between ecosystems
 3. RDA
@@ -68,27 +68,29 @@ treedata=treedata[treedata$ecosys!="S",] #Remove the stream plots -- Will need t
 library(vegan)
 ```
 
-```{r Totals}
+```{r Explatory Stats}
 #General summation and graph by date
 sum(commdata$Total) #Total=99517 individuals
 plot(commdata$Total~commdata$Date) #Most individuals in falls
 dateordered=ordered(commdata$Date, levels = c("10.6.15","5.5.16","8.10.16","10.15.16"))
 sumplot=boxplot(commdata$Total~dateordered, xlab="Date", ylab="Average Site Sum")
+sumplot2=boxplot(commdata$Total~dateordered, xlab="Date", ylab="Average Site Sum", ylim=c(0,1000))
 
-
-plot(commdata$Total~commdata$Habitat, xlab="Ecosystem", ylab="Average Ecosystem Sum")
+ecoplot=plot(commdata$Total~commdata$Habitat, xlab="Ecosystem", ylab="Average Ecosystem Sum")
+ecoplot2=plot(commdata$Total~commdata$Habitat, xlab="Ecosystem", ylab="Average Ecosystem Sum", ylim=c(0,1000))
 
 #abundance by date and ecosystem
 abund=aov(commdata$Total~commdata$Habitat*commdata$Date)
 summary(abund)
 plot(abund)
 shapiro.test(commdata$Total)
-#shapiro.test is super non-normal, sqrt transform
-sqtot=sqrt(commdata$Total)
+#shapiro.test is super non-normal; log transform best transforms the datam but not great..
+sqtot=lm(commdata$Total)
 abund1=aov(sqtot~commdata$Habitat*commdata$Date)
 summary(abund1)
 plot(abund1)
 shapiro.test(sqtot)
+TukeyHSD(abund1)
 ```
 
 ```{r Diversity}
