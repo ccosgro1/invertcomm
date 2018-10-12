@@ -59,13 +59,15 @@ For the EntSA poster:
 #SET UP
 
 #Load Data
-commdata=read.csv("C:/Users/Colleen/OneDrive/Documents/School/Research/Data/Inverts/invertcomm/invertcommdata.csv", header=T, row.names=1)
+commdata=read.csv("C:/Users/Colleen/OneDrive/Documents/School/Research/Data/Inverts/invertcomm/invertcommdata.csv", header=T)
 treedata=read.csv("C:/Users/Colleen/Dropbox/Jennings 2016/New Adult Basal Area.csv")
 soildata=read.csv("C:/Users/Colleen/OneDrive/Documents/School/Grad School/SpatialStats/soil data May 08 for tree plots.csv")
 treedata[is.na(treedata)] <- 0
 treedata=treedata[treedata$ecosys!="S",] #Remove the stream plots -- Will need to put these back in when I fix the commdata$ecosystem columns.
 
 library(vegan)
+library(packfor)
+dim(commdata)
 ```
 
 ```{r Explatory Stats}
@@ -104,10 +106,31 @@ gammadiv=with(commdata, tapply(specnumber(commdata),Habitat, mean))
 #RDA analysis
 dim(commdata)
 colnames(commdata)
-
-comm.rowsums=apply(commdata[,5:167],1,sum)
-tree.hel=tree.ringsum
-tree.hel[,10:43]=tree.hel[,10:43]/tree.rowsums
-tree.hel[,10:43]=sqrt(tree.hel[,10:43])
+rdadate1=commdata[commdata$Date=="10.15.16",]
+tree.hel.soil=merge(rdadate1,soildata)
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+hel.rda.fulsoil = rda(tree.hel.soil[,5:155], tree.hel.soil[,165:189])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+# Here is the forward selection command and then constructing a model with selected variables.
+hel.rda.for=forward.sel(tree.hel.soil[,10:42], tree.hel.soil[,52:76], adjR2thresh=global.thresh)
+hel.rda.for
+names(tree.hel.soil)
+hel.rda.selsoil = rda(tree.hel.soil[,10:42] ~ as.matrix(tree.hel.soil[,c(52,54,56,57,58)]))
+anova(hel.rda.selsoil)
+RsquareAdj(hel.rda.selsoil)
+plot(hel.rda.selsoil)
 ````
+When comparing invertebrate community to soil variables:
+Date 1 (10.6.15): insignificant. p=0.305
+Date 2 (5.5.16): insignificant. p=0.943
+Date 3 (8.10.16): insignificant. p=0.402
+Date 4 (10.16.15): insiginificant. p=0.115
+
+When comparing invertebrate community to tree community:
 
