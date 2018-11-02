@@ -78,7 +78,14 @@ rownames(tree.ringsum)=tree.ringsum[,1]
 
 library(vegan)
 library(packfor)
+library(nlme)
 dim(commdata)
+
+#Separate out dates for future lines of code:
+date4=commdata[commdata$Date=="10.15.16",]
+date2=commdata[commdata$Date=="5.5.16",]
+date3=commdata[commdata$Date=="8.10.16",]
+date1=commdata[commdata$Date=="10.6.15",]
 ```
 
 ```{r Exploratory Stats}
@@ -127,18 +134,31 @@ sum(rip$Total)
 
 ```{r Diversity}
 #Gamma diversity between ecosystems
-rownames(rdadate1)=rdadate1[,1]
-H=diversity(rdadate1)
+rownames(date1)=date1[,1]
+dim(date1)
+Hdate1=diversity(date1[1:89,8:158])
+raredate1=rarefy(date1[,8:158], 2)-1
+specno=specnumber(commdata[8:158], MARGIN=1)
+
+botrich=lme(specno~asfactor(commdata$TerrType)*commdata$Date+commdata$Plot)
+summary(botrich)
+TukeyHSD(botrich)
+shapiro.test(specscno)
+
+
 
 gammadiv=with(commdata, tapply(specnumber(commdata),Habitat, mean))
 ````
 
+
 ```{r RDA DATE1}
 #RDA analysis
 dim(commdata)
-colnames(commdata)
-rdadate1=commdata[commdata$Date=="10.6.15",]
-
+colnames(commdata)!="Drosophilidae..Drosophila"
+rdadate1=commdata[commdata$Date=="10.6.15",)]
+#REMOVE FRUIT FLIES
+rdadate1=commdata[commdata$Date=="10.6.15",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
+dim(rdadate1)
 
 tree.hel.soil=merge(rdadate1,soildata, by="Plot")
 dim(tree.hel.soil)
@@ -147,9 +167,9 @@ tree.hel.soil=na.exclude(tree.hel.soil)
 # Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
 colnames(tree.hel.soil)
 tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core"|tree.hel.soil$EP=="Transition",]
-#dim(tree.hel.soil)
+dim(tree.hel.soil)
 
-hel.rda.fulsoil = rda(tree.hel.soil[,8:158], tree.hel.soil[,168:192])
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -170,7 +190,7 @@ colnames(tree.ringsum1)
 dim(rdadate1)
 inverttrees=merge(rdadate1,tree.ringsum)
 dim(inverttrees)
-invert.colsums=apply(inverttrees[,8:158],2,sum)
+invert.colsums=apply(inverttrees[,8:155],2,sum)
 
 colnames(inverttrees)
 invert.hel=inverttrees[,which(invert.colsums!=0)]
@@ -189,7 +209,7 @@ invert.hel=invert.hel[invert.hel$TerrType!="S",]
 tree.hel=tree.hel[tree.hel$Plot!="M4",]
 tree.hel=tree.hel[tree.hel$Plot!="I3/4",]
 
-tree.hel.soil=cbind(tree.hel,invert.hel[,6:70])
+tree.hel.soil=cbind(tree.hel,invert.hel[,6:67])
 dim(tree.hel.soil)
 rownames(tree.hel.soil)=tree.hel.soil[,1]
 tree.hel.soil=na.exclude(tree.hel.soil)
@@ -198,7 +218,7 @@ colnames(tree.hel.soil)
 #tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core",]
 dim(tree.hel.soil)
 
-hel.rda.fulsoil = rda(tree.hel.soil[,46:110],tree.hel.soil[,c(8,9,13,14,18,09,22,27,28,30,31,33,34,37)])
+hel.rda.fulsoil = rda(tree.hel.soil[,46:107],tree.hel.soil[,c(8,9,13,14,18,09,22,27,28,30,31,33,34,37)])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -224,7 +244,7 @@ all.pcnmvecs=all.pcnm1$vectors
 tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
 names(tree.hel.all.pcnm)
 # Now run step 1, global analysis
-hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,46:110], tree.hel.all.pcnm[,111:157])
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,46:107], tree.hel.all.pcnm[,111:154])
 anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
@@ -238,7 +258,30 @@ global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 #RsquareAdj(hel.rda.all.selpcnm)
 
 
+##INVERTS BY ECOSYSTEM
+#RDA analysis
+invert.hel=inverttrees[,which(invert.colsums!=0)]
+dim(invert.hel)
+invert.hel=decostand(invert.hel, method="hellinger")
+rownames(invert.hel)=invert.hel[,1]
+
+#Just the CORE Plots
+invert.hel=invert.hel[invert.hel$EP=="Core",]
+hel.rda.fulsoil = rda(invert.hel[,8:67]~invert.hel$Habitat)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#Everything BUT the Transition
+invert.hel=invert.hel[invert.hel$EP!="Edge",]
+dim(invert.hel)
+hel.rda.fulsoil = rda(invert.hel[,8:67]~invert.hel$Habitat)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
 ````
+
 ```{r RDA DATE2}
 #RDA analysis
 dim(commdata)
@@ -326,6 +369,34 @@ anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 # NON significant - don't run step 2. To find step 2, see Blackwood et al code from Monographs paper
+
+##INVERTS BY ECOSYSTEM
+#RDA analysis
+rdadate1=commdata[commdata$Date=="5.5.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
+inverttrees=merge(rdadate1,tree.ringsum3)
+dim(inverttrees)
+invert.colsums=apply(inverttrees[,8:158],2,sum)
+invert.hel=cbind(inverttrees$Plot,inverttrees$EP,inverttrees$Habitat,inverttrees[,which(invert.colsums!=0)])
+dim(invert.hel)
+invert.hel=decostand(invert.hel, method="hellinger")
+rownames(invert.hel)=invert.hel[,1]
+
+#Just the CORE Plots
+invert.helcore=invert.hel[invert.hel[,2]=="Core",]
+hel.rda.fulsoil = rda(invert.helcore[,8:92]~invert.helcore[,3])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#Everything BUT the Transition
+invert.heledge=invert.hel[invert.hel[,2]!="Edge",]
+dim(invert.heledge)
+hel.rda.fulsoil = rda(invert.heledge[,7:8:92]~invert.heledge[,3])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
 ````
 
 ```{r RDA DATE3}
@@ -412,8 +483,38 @@ RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 # NON significant - don't run step 2. To find step 2, see Blackwood et al code from Monographs paper
 
+
+##INVERTS BY ECOSYSTEM
+#RDA analysis
+rdadate1=commdata[commdata$Date=="8.10.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
+inverttrees=merge(rdadate1,tree.ringsum3)
+dim(inverttrees)
+invert.colsums=apply(inverttrees[,8:158],2,sum)
+invert.hel=cbind(inverttrees$Plot,inverttrees$EP,inverttrees$Habitat,inverttrees[,which(invert.colsums!=0)])
+dim(invert.hel)
+invert.hel=decostand(invert.hel, method="hellinger")
+rownames(invert.hel)=invert.hel[,1]
+
+#Just the CORE Plots
+invert.helcore=invert.hel[invert.hel[,2]=="Core",]
+hel.rda.fulsoil = rda(invert.helcore[,5:80]~invert.helcore[,3])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#Everything BUT the Transition
+invert.heledge=invert.hel[invert.hel[,2]!="Edge",]
+dim(invert.heledge)
+hel.rda.fulsoil = rda(invert.heledge[,5:80]~invert.heledge[,3])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+
 ````
-MARGINAL SIGNIFICANCE: Date 3, core plots only. Inverts~Tree.
+MARGINAL SIGNIFICANCE: Date 3, core plots only. Inverts~Tree. (0.097)
+
 ```{r RDA DATE4}
 #RDA analysis
 dim(commdata)
@@ -508,6 +609,35 @@ anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 # NON significant - don't run step 2. To find step 2, see Blackwood et al code from Monographs paper
+
+##INVERTS BY ECOSYSTEM
+#RDA analysis
+rdadate1=commdata[commdata$Date=="10.15.16",]
+rdadate1=commdata[commdata$Date=="10.15.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
+inverttrees=merge(rdadate1,tree.ringsum3)
+dim(inverttrees)
+invert.colsums=apply(inverttrees[,8:158],2,sum)
+invert.hel=cbind(inverttrees$Plot,inverttrees$EP,inverttrees$Habitat,inverttrees[,which(invert.colsums!=0)])
+dim(invert.hel)
+invert.hel=decostand(invert.hel, method="hellinger")
+rownames(invert.hel)=invert.hel[,1]
+
+#Just the CORE Plots
+invert.helcore=invert.hel[invert.hel[,2]=="Core",]
+hel.rda.fulsoil = rda(invert.helcore[,7:72]~invert.helcore[,3])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#Everything BUT the Transition
+invert.heledge=invert.hel[invert.hel[,2]!="Edge",]
+dim(invert.heledge)
+hel.rda.fulsoil = rda(invert.heledge[7:72]~invert.heledge[,3])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
 
 ````
 
