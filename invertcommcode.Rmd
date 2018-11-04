@@ -145,9 +145,38 @@ summary(botrich)
 TukeyHSD(botrich)
 shapiro.test(specscno)
 
+#Alpha
+alpha1=fisher.alpha(date1[,8:158])
+alpha2=fisher.alpha(date2[,8:158])
+alpha3=fisher.alpha(date3[,8:158])
+alpha4=fisher.alpha(date4[,8:158])
+plot(alpha1)
+plot(alpha2)
+plot(alpha3)
+plot(alpha4)
+
+#Gamma
+gammadiv=with(date1, tapply(specnumber(date1[,8:158]),Habitat, mean))
+plot(gammadiv)
+gamma2=with(date2, tapply(specnumber(date2[,8:158]),Habitat, mean))
+gamma3=with(date3, tapply(specnumber(date3[,8:158]),Habitat, mean))
+gamma4=with(date4, tapply(specnumber(date4[,8:158]),Habitat, mean))
+plot(gammadiv,gamma2,gamma3,gamma4)
+
+#Beta
+alpha1 <- with(date1, tapply(specnumber(date1[,8:158]), Habitat, mean))
+alpha2 <- with(date2, tapply(specnumber(date2[,8:158]), Habitat, mean))
+alpha3 <- with(date3, tapply(specnumber(date3[,8:158]), Habitat, mean))
+alpha4 <- with(date4, tapply(specnumber(date4[,8:158]), Habitat, mean))
 
 
-gammadiv=with(commdata, tapply(specnumber(commdata),Habitat, mean))
+
+beta1=gammadiv/alpha1-1
+beta2=gamma2/alpha2-1
+beta3=gamma3/alpha3-1
+beta4=gamma4/alpha4-1
+
+
 ````
 
 
@@ -636,7 +665,6 @@ hel.rda.fulsoil = rda(invert.heledge[7:72]~invert.heledge[,3])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
-
 
 
 ````
