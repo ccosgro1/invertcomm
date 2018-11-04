@@ -130,6 +130,12 @@ sum(Bot$Total)
 rip=commdata[commdata$Habitat=="BD"|commdata$Habitat=="DB",]
 sum(rip$Total)
 
+
+#Rank abundance
+totalrs=apply(commdata[,8:158],2,sum)
+plot(rank(totalrs),totalrs, xlab="invert species", xlim=c(1,158))
+plot(rank(totalrs),totalrs, xlab="invert species", xlim=c(1,158), ylim=c(0,2500))
+
 ```
 
 ```{r Diversity}
