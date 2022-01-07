@@ -1,0 +1,86 @@
+---
+title: "figures for talks"
+author: "Colleen Cosgrove"
+date: "August 8, 2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{load files}
+data=read.csv("beerbottleordercounts.csv", header=T)
+library(ggplot2)
+library(gcookbook)
+```
+
+
+```{figures}
+colnames(data)
+ggplot(data, aes(x=Date, y=Count, fill=Order)) +
+  theme_bw() +
+  geom_bar(stat="identity") +
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.line = element_line(color="black", size=0.5, linetype = "solid")) + 
+  scale_x_discrete(limits=c("Fall 2015", "Spring 2016", "Summer 2016", "Fall 2016")) + 
+  scale_y_continuous(expand=c(0,0), limits=c(0,60000))+
+  labs(y="Abundance")
+
+#Total Counts no diptera
+ggplot(nodros, aes(x=Date, y=Count, fill=Order)) +
+  theme_bw() +
+  geom_bar(stat="identity") +
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.line = element_line(color="black", size=0.5, linetype = "solid")) + 
+  scale_x_discrete(limits=c("Fall 2015", "Spring 2016", "Summer 2016", "Fall 2016")) + 
+  scale_y_continuous(expand=c(0,0), limits=c(0,2500))+
+  labs(y="Abundance")
+
+#Total counts graph that includes diptera, but NOT drosophila
+commdata=commdata[,c(1:80,84:158)]
+
+data=read.csv("ordercountsnodros.csv", header=T)
+ggplot(data, aes(x=Date, y=Count, fill=Order)) +
+  theme_bw() +
+  geom_bar(stat="identity") +
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.line = element_line(color="black", size=0.5, linetype = "solid")) + 
+  scale_x_discrete(limits=c("Fall 2015", "Spring 2016", "Summer 2016", "Fall 2016")) + 
+  scale_y_continuous(expand=c(0,0))+
+  labs(y="Abundance")
+
+
+
+#Total counts of order
+dip=commdata[,c(1:7,70:107)]
+dim(dip)
+
+
+data=read.csv("dipteragenuscounts.csv", header=T)
+ggplot(data, aes(x=Date, y=Count, fill=Genus)) +
+  theme_bw() +
+  geom_bar(stat="identity") +
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.line = element_line(color="black", size=0.5, linetype = "solid")) + 
+  scale_x_discrete(limits=c("Fall 2015", "Spring 2016", "Summer 2016", "Fall 2016")) + 
+  scale_fill_manual(values=c("chartreuse4", "chartreuse3", "chartreuse2", "chartreuse1", "greenyellow", "green4", "green3", "green2", "limegreen", "green1", "lawngreen", "yellowgreen", "palegreen", "gainsboro", "palegreen1", "floralwhite", "darkslategray1", "lightcyan", "lightgray", "lightblue", "aquamarine", "olivedrab4", "palegreen2", "darkolivegreen4", "mediumseagreen", "forestgreen", "lightgreen", "springgreen4", "palegreen3", "springgreen3", "darkolivegreen3", "seagreen2", "olivedrab2", "white", "seagreen4", "seagreen1", "darkolivegreen", "darkolivegreen1", "olivedrab1", "palegreen4", "springgreen", "darkseagreen", "seagreen", "olivedrab", "darkgreen")) +
+  scale_y_continuous(expand=c(0,0))+
+  labs(y="Abundance")
+
+
+```
