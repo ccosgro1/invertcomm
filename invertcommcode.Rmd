@@ -10,6 +10,7 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
 ```{r combine datasets}
 #Combine the four individual CSVs from each sample date
 #Note to self: never do in a new tab what you can do in a new column...
@@ -48,7 +49,7 @@ is.na(commdata)
 write.csv(commdata,"invertcommdata2.csv")
 ```
 
-For the EntSA poster:
+or the EntSA poster:
 1. Totals by ecosystem, data
 2. Gamma diversity between ecosystems
 3. RDA
@@ -79,6 +80,8 @@ rownames(tree.ringsum)=tree.ringsum[,1]
 library(vegan)
 library(packfor)
 library(nlme)
+library(ggplot2)
+library(lme4)
 dim(commdata)
 
 #Separate out dates for future lines of code:
@@ -125,10 +128,6 @@ sum(date3$Total)
 date1=commdata[commdata$Date=="10.6.15",]
 sum(date1$Total)
 
-Bot=commdata[commdata$Habitat=="B",]
-sum(Bot$Total)
-rip=commdata[commdata$Habitat=="BD"|commdata$Habitat=="DB",]
-sum(rip$Total)
 
 
 #Rank abundance
@@ -156,31 +155,330 @@ alpha1=fisher.alpha(date1[,8:158])
 alpha2=fisher.alpha(date2[,8:158])
 alpha3=fisher.alpha(date3[,8:158])
 alpha4=fisher.alpha(date4[,8:158])
-plot(alpha1)
+boxplot(alpha1)
 plot(alpha2)
 plot(alpha3)
 plot(alpha4)
 
-#Gamma
-gammadiv=with(date1, tapply(specnumber(date1[,8:158]),Habitat, mean))
-plot(gammadiv)
-gamma2=with(date2, tapply(specnumber(date2[,8:158]),Habitat, mean))
-gamma3=with(date3, tapply(specnumber(date3[,8:158]),Habitat, mean))
-gamma4=with(date4, tapply(specnumber(date4[,8:158]),Habitat, mean))
-plot(gammadiv,gamma2,gamma3,gamma4)
 
+#Gamma
+gammadiv=with(date1, tapply(specnumber(date1[,8:158]),Habitat))
+plot(gammadiv)
+gamma2=with(date2, tapply(specnumber(date2[,8:158]),Habitat))
+gamma3=with(date3, tapply(specnumber(date3[,8:158]),Habitat))
+gamma4=with(date4, tapply(specnumber(date4[,8:158]),Habitat))
+plot(gammadiv,gamma2,gamma3,gamma4)
 #Beta
 alpha1 <- with(date1, tapply(specnumber(date1[,8:158]), Habitat, mean))
 alpha2 <- with(date2, tapply(specnumber(date2[,8:158]), Habitat, mean))
 alpha3 <- with(date3, tapply(specnumber(date3[,8:158]), Habitat, mean))
 alpha4 <- with(date4, tapply(specnumber(date4[,8:158]), Habitat, mean))
-
-
-
 beta1=gammadiv/alpha1-1
 beta2=gamma2/alpha2-1
 beta3=gamma3/alpha3-1
 beta4=gamma4/alpha4-1
+
+boxplot(alpha1,alpha2,alpha3,alpha4, xlab="Date", ylab="Species Richness")
+mtext(side=1,at=1,"6 Oct 2015",las=2,line=1, srt=45)
+mtext(side=1,at=2,"5 May 2016",las=2,line=1)
+mtext(side=1,at=3,"10 Aug 2016",las=2,line=1)
+mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
+labels=lab, srt=45, adj=1, xpd=TRUE)
+
+richness(date1[,8:158])
+
+
+##Real stats or something
+colnames(date1)
+dim(date1)
+rownames(date1)=date1[,1]
+Hdate1=diversity(date1[8:158], index="shannon")
+rownames(date2)=date2[,1]
+Hdate2=diversity(date2[8:158], index="shannon")
+rownames(date3)=date3[,1]
+Hdate3=diversity(date3[8:158], index="shannon")
+rownames(date4)=date4[,1]
+Hdate4=diversity(date4[8:158], index="shannon")
+boxplot(Hdate1, Hdate2, Hdate3, Hdate4, xlab="Date", ylab="Shannon's Index")
+mtext(side=1,at=1,"6 Oct 2015",las=2,line=1, srt=45)
+mtext(side=1,at=2,"5 May 2016",las=2,line=1)
+mtext(side=1,at=3,"10 Aug 2016",las=2,line=1)
+mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
+
+
+#shannon's diversity by ecosystem type
+bot=commdata[commdata$TerrType=="B",]
+b1=bot[bot$Date=="10.6.15",]
+b2=bot[bot$Date=="5.5.16",]
+b3=bot[bot$Date=="8.10.16",]
+b4=bot[bot$Date=="10.15.16",]
+dim(bot)
+Hbot=diversity(bot[8:158], index="shannon")
+hb1=diversity(b1[8:158], index="shannon")
+hb2=diversity(b2[8:158], index="shannon")
+hb3=diversity(b3[8:158], index="shannon")
+hb4=diversity(b4[8:158], index="shannon")
+boxplot(Hbot,hb1, hb2, hb3, hb4, xlab="bottomland diversity", ylab="shannons diversity")
+mtext(side=1,at=1,"All Dates",las=2,line=1, srt=45)
+mtext(side=1,at=2,"6 Oct 2015",las=2,line=1, srt=45)
+mtext(side=1,at=3,"5 May 2016",las=2,line=1)
+mtext(side=1,at=4,"10 Aug 2016",las=2,line=1)
+mtext(side=1,at=5,"15 Oct 2016",las=2,line=1)
+
+
+srb1=specnumber(b1[8:158], MARGIN=1)
+srb2=specnumber(b2[8:158], MARGIN=1)
+srb3=specnumber(b3[8:158], MARGIN=1)
+srb4=specnumber(b4[8:158], MARGIN=1)
+boxplot(srb1,srb2,srb3,srb4, xlab="bottomland richness", ylab="species richness")
+mtext(side=1,at=1,"6 Oct 2015",las=2,line=1, srt=45)
+mtext(side=1,at=2,"5 May 2016",las=2,line=1)
+mtext(side=1,at=3,"10 Aug 2016",las=2,line=1)
+mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
+
+
+rip=commdata[commdata$TerrType=="R",]
+r1=rip[rip$Date=="10.6.15",]
+r2=rip[rip$Date=="5.5.16",]
+r3=rip[rip$Date=="8.10.16",]
+r4=rip[rip$Date=="10.15.16",]
+Hrip=diversity(rip[8:158], index="shannon")
+hr1=diversity(r1[8:158], index="shannon")
+hr2=diversity(r2[8:158], index="shannon")
+hr3=diversity(r3[8:158], index="shannon")
+hr4=diversity(r4[8:158], index="shannon")
+boxplot(Hrip, hr1, hr2, hr3, hr4, xlab="riparian diversity", ylab="shannons diversity")
+mtext(side=1,at=1,"All Dates",las=2,line=1, srt=45)
+mtext(side=1,at=2,"6 Oct 2015",las=2,line=1, srt=45)
+mtext(side=1,at=3,"5 May 2016",las=2,line=1)
+mtext(side=1,at=4,"10 Aug 2016",las=2,line=1)
+mtext(side=1,at=5,"15 Oct 2016",las=2,line=1)
+
+
+srr1=specnumber(r1[8:158], MARGIN=1)
+srr2=specnumber(r2[8:158], MARGIN=1)
+srr3=specnumber(r3[8:158], MARGIN=1)
+srr4=specnumber(r4[8:158], MARGIN=1)
+boxplot(srr1,srr2,srr3,srr4, xlab="riparian richness", ylab="species richness")
+mtext(side=1,at=1,"6 Oct 2015",las=2,line=1, srt=45)
+mtext(side=1,at=2,"5 May 2016",las=2,line=1)
+mtext(side=1,at=3,"10 Aug 2016",las=2,line=1)
+mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
+
+
+upl=commdata[commdata$TerrType=="U",]
+u1=upl[upl$Date=="10.6.15",]
+u2=upl[upl$Date=="5.5.16",]
+u3=upl[upl$Date=="8.10.16",]
+u4=upl[upl$Date=="10.15.16",]
+Hupl=diversity(upl[8:158], index="shannon")
+hu1=diversity(u1[8:158], index="shannon")
+hu2=diversity(u2[8:158], index="shannon")
+hu3=diversity(u3[8:158], index="shannon")
+hu4=diversity(u4[8:158], index="shannon")
+boxplot(hu1, hu2, hu3, hu4, xlab="upland diversity", ylab="shannons diversity")
+mtext(side=1,at=1,"All Dates",las=2,line=1, srt=45)
+mtext(side=1,at=1,"6 Oct 2015",las=2,line=1, srt=45)
+mtext(side=1,at=2,"5 May 2016",las=2,line=1)
+mtext(side=1,at=3,"10 Aug 2016",las=2,line=1)
+mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
+
+
+sru1=specnumber(u1[8:158], MARGIN=1)
+sru2=specnumber(u2[8:158], MARGIN=1)
+sru3=specnumber(u3[8:158], MARGIN=1)
+sru4=specnumber(u4[8:158], MARGIN=1)
+boxplot(sru1,sru2,sru3,sru4, xlab="upland richness", ylab="species richness")
+mtext(side=1,at=1,"6 Oct 2015",las=2,line=1, srt=45)
+mtext(side=1,at=2,"5 May 2016",las=2,line=1)
+mtext(side=1,at=3,"10 Aug 2016",las=2,line=1)
+mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
+
+
+dis=commdata[commdata$TerrType=="D",]
+rownames(dis)=dis[,1]
+Hdis=diversity(dis[8:158], index="shannon")
+
+boxplot(Hbot, Hrip, Hupl, Hdis, xlab="Ecosystem", ylab="Shannon's Diversity")
+mtext(side=1,at=1,"Bottomland",las=2,line=1, srt=45)
+mtext(side=1,at=2,"Riparian",las=2,line=1)
+mtext(side=1,at=3,"Upland",las=2,line=1)
+mtext(side=1,at=4,"Disturbed",las=2,line=1)
+
+
+halp=aov(Hbot~bot$Date+bot$Plot)
+summary(halp)
+TukeyHSD(halp)
+halp=aov(Hrip~rip$Date+rip$Plot)
+summary(halp)
+halp=aov(Hupl~upl$Date+upl$Plot)
+summary(halp)
+halp=aov(Hdis~dis$Date+dis$Plot)
+summary(halp)
+
+##Ecotone Diversity and Richness
+#uplbot
+uplbot=commdata[commdata$TerrType=="UB"|commdata$TerrType=="BU",]
+dim(uplbot)
+ub1=uplbot[uplbot$Date=="10.6.15",]
+ub2=uplbot[uplbot$Date=="5.5.16",]
+ub3=uplbot[uplbot$Date=="8.10.16",]
+ub4=uplbot[uplbot$Date=="10.15.16",]
+
+ubdall=diversity(uplbot[8:158], index="shannon")
+ubd1=diversity(ub1[8:158], index="shannon")
+ubd2=diversity(ub2[8:158], index="shannon")
+ubd3=diversity(ub3[8:158], index="shannon")
+ubd4=diversity(ub4[8:158], index="shannon")
+boxplot(ubdall, ubd1, ubd2, ubd3, ubd4, xlab="ub diversity", ylab="shannons diversity")
+mtext(side=1,at=1,"All Dates",las=2,line=1, srt=45)
+mtext(side=1,at=2,"6 Oct 2015",las=2,line=1, srt=45)
+mtext(side=1,at=3,"5 May 2016",las=2,line=1)
+mtext(side=1,at=4,"10 Aug 2016",las=2,line=1)
+mtext(side=1,at=5,"15 Oct 2016",las=2,line=1)
+
+ubr1=specnumber(u1[8:158], MARGIN=1)
+ubr2=specnumber(u2[8:158], MARGIN=1)
+ubr3=specnumber(u3[8:158], MARGIN=1)
+ubr4=specnumber(u4[8:158], MARGIN=1)
+boxplot(ubr1,ubr2,ubr3,ubr4, xlab="UB spp richness", ylab="species richness")
+mtext(side=1,at=1,"6 Oct 2015",las=2,line=1, srt=45)
+mtext(side=1,at=2,"5 May 2016",las=2,line=1)
+mtext(side=1,at=3,"10 Aug 2016",las=2,line=1)
+mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
+
+#ripbot
+ripbot=commdata[commdata$TerrType=="RB"|commdata$TerrType=="BR",]
+rb1=ripbot[ripbot$Date=="10.6.15",]
+rb2=ripbot[ripbot$Date=="5.5.16",]
+rb3=ripbot[ripbot$Date=="8.10.16",]
+rb4=ripbot[ripbot$Date=="10.15.16",]
+
+rbdall=diversity(ripbot[8:158], index="shannon")
+rbd1=diversity(rb1[8:158], index="shannon")
+rbd2=diversity(rb2[8:158], index="shannon")
+rbd3=diversity(rb3[8:158], index="shannon")
+rbd4=diversity(rb4[8:158], index="shannon")
+boxplot(rbdall, rbd1, rbd2, rbd3, rbd4, xlab="RB diversity", ylab="shannons diversity")
+mtext(side=1,at=1,"All Dates",las=2,line=1, srt=45)
+mtext(side=1,at=2,"6 Oct 2015",las=2,line=1, srt=45)
+mtext(side=1,at=3,"5 May 2016",las=2,line=1)
+mtext(side=1,at=4,"10 Aug 2016",las=2,line=1)
+mtext(side=1,at=5,"15 Oct 2016",las=2,line=1)
+
+rbr1=specnumber(u1[8:158], MARGIN=1)
+rbr2=specnumber(u2[8:158], MARGIN=1)
+rbr3=specnumber(u3[8:158], MARGIN=1)
+rbr4=specnumber(u4[8:158], MARGIN=1)
+boxplot(rbr1,rbr2,rbr3,rbr4, xlab="RB spp richness", ylab="species richness")
+mtext(side=1,at=1,"6 Oct 2015",las=2,line=1, srt=45)
+mtext(side=1,at=2,"5 May 2016",las=2,line=1)
+mtext(side=1,at=3,"10 Aug 2016",las=2,line=1)
+mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
+
+#uplrip
+uplrip=commdata[commdata$TerrType=="UR"|commdata$TerrType=="RU",]
+ur1=uplrip[uplrip$Date=="10.6.15",]
+ur2=uplrip[uplrip$Date=="5.5.16",]
+ur3=uplrip[uplrip$Date=="8.10.16",]
+ur4=uplrip[uplrip$Date=="10.15.16",]
+
+urdall=diversity(uplrip[8:158], index="shannon")
+urd1=diversity(ur1[8:158], index="shannon")
+urd2=diversity(ur2[8:158], index="shannon")
+urd3=diversity(ur3[8:158], index="shannon")
+urd4=diversity(ur4[8:158], index="shannon")
+boxplot(urdall,urd1, urd2, urd3, urd4, xlab="ur diversity", ylab="shannons diversity")
+mtext(side=1,at=1,"All Dates",las=2,line=1, srt=45)
+mtext(side=1,at=2,"6 Oct 2015",las=2,line=1, srt=45)
+mtext(side=1,at=3,"5 May 2016",las=2,line=1)
+mtext(side=1,at=4,"10 Aug 2016",las=2,line=1)
+mtext(side=1,at=5,"15 Oct 2016",las=2,line=1)
+
+
+urr1=specnumber(u1[8:158], MARGIN=1)
+urr2=specnumber(u2[8:158], MARGIN=1)
+urr3=specnumber(u3[8:158], MARGIN=1)
+urr4=specnumber(u4[8:158], MARGIN=1)
+srripupl=boxplot(urr1, urr2, urr3, urr4, xlab="ur spp richness", ylab="species richness")
+mtext(side=1,at=1,"6 Oct 2015",las=2,line=1, srt=45)
+mtext(side=1,at=2,"5 May 2016",las=2,line=1)
+mtext(side=1,at=3,"10 Aug 2016",las=2,line=1)
+mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
+
+boxplot(hu4, urd4, hr4, xlab="Ecosystem", ylab="Shannons diversity")
+mtext(side=1,at=1,"U",las=2,line=1, srt=45)
+mtext(side=1,at=2,"UR",las=2,line=1)
+mtext(side=1,at=3,"R",las=2,line=1)
+
+boxplot(sru4, urr4, srr4, xlab="Ecosystem", ylab="species richness")
+mtext(side=1,at=1,"U",las=2,line=1, srt=45)
+mtext(side=1,at=2,"UR",las=2,line=1)
+mtext(side=1,at=3,"R",las=2,line=1)
+
+
+
+####GRAHING FOR ESA
+boxplot(hr1, hr2, hr3, hr4, ylab="Shannon's Diversity")
+title(main = "Riparian")
+
+boxplot(srr1,srr2,srr3,srr4, xlab="Date", ylab="Taxonomic Richness", ylim=c(5,25))
+mtext(side=1,at=1,"6 Oct 2015",las=0,line=1, srt=45)
+mtext(side=1,at=2,"5 May 2016",las=0,line=1)
+mtext(side=1,at=3,"10 Aug 2016",las=0,line=1)
+mtext(side=1,at=4,"15 Oct 2016",las=0,line=1)
+
+boxplot(urd1, urd2, urd3, urd4, xlab="") #Ecotone Diversity
+title(main="Riparian-Upland")
+
+
+srripupl=boxplot(urr1, urr2, urr3, urr4, xlab="Date") #SR RipUpl
+mtext(side=1,at=1,"6 Oct 2015",las=0,line=1, srt=45)
+mtext(side=1,at=2,"5 May 2016",las=0,line=1)
+mtext(side=1,at=3,"10 Aug 2016",las=0,line=1)
+mtext(side=1,at=4,"15 Oct 2016",las=0,line=1)
+
+boxplot(hu1, hu2, hu3, hu4, xlab="") #Upland Diversity
+title(main="Upland")
+
+boxplot(sru1,sru2,sru3,sru4, xlab="Date", main="Upland")
+mtext(side=1,at=1,"6 Oct 2015",las=0,line=1, srt=45)
+mtext(side=1,at=2,"5 May 2016",las=0,line=1)
+mtext(side=1,at=3,"10 Aug 2016",las=0,line=1)
+mtext(side=1,at=4,"15 Oct 2016",las=0,line=1)
+
+
+
+###
+commdata.core=commdata[commdata$EP=="Core",]
+dim(commdata.core)
+halldates=diversity(commdata.core[,8:158], index="shannon")
+alldates=lme(halldates~Habitat*Date, random = ~ 1|Plot, data=commdata.core)
+anova(alldates)
+
+sralldates=specnumber(commdata.core[8:158], MARGIN=1)
+datesall=lme(sralldates~Habitat*Date, random=~1|Plot, data=commdata.core)
+anova(datesall)
+
+commdata.edge=commdata[commdata$EP!="Trans",]
+commdata.edge=commdata.edge[commdata.edge$Habitat!="UR",]
+dim(commdata.edge)
+
+halldates1=diversity(commdata.edge[8:158], index="shannon")
+alldates1=lme(halldates1~Habitat*Date, random = ~ 1|Plot, data=commdata.edge)
+anova(alldates1)
+
+sralldates1=specnumber(commdata.edge[8:158], MARGIN=1)
+datesall1=lme(sralldates1~Habitat*Date, random=~1|Plot, data=commdata.edge)
+anova(datesall1)
+
+commdata.edge$Habitat
+colnames(commdata)
+commdata$Habitat
+
+
+colnames(commdata)=commdata[1,]
+lme(Hdate1~Habitat+Plot, data=date1)
 
 
 ````
@@ -190,7 +488,7 @@ beta4=gamma4/alpha4-1
 #RDA analysis
 dim(commdata)
 colnames(commdata)!="Drosophilidae..Drosophila"
-rdadate1=commdata[commdata$Date=="10.6.15",)]
+rdadate1=commdata[commdata$Date=="10.6.15",]
 #REMOVE FRUIT FLIES
 rdadate1=commdata[commdata$Date=="10.6.15",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
 dim(rdadate1)
@@ -308,7 +606,7 @@ RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 #Everything BUT the Transition
-invert.hel=invert.hel[invert.hel$EP!="Edge",]
+invert.hel=invert.hel[invert.hel$EP=="Core"|invert.hel$EP=="Trans"|invert.hel$EP=="Edge",]
 dim(invert.hel)
 hel.rda.fulsoil = rda(invert.hel[,8:67]~invert.hel$Habitat)
 anova(hel.rda.fulsoil)
@@ -407,6 +705,7 @@ global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
 ##INVERTS BY ECOSYSTEM
 #RDA analysis
+rdadate1=commdata[commdata$Date=="5.5.16",]
 rdadate1=commdata[commdata$Date=="5.5.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
 inverttrees=merge(rdadate1,tree.ringsum3)
 dim(inverttrees)
@@ -424,7 +723,7 @@ RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 #Everything BUT the Transition
-invert.heledge=invert.hel[invert.hel[,2]!="Edge",]
+invert.heledge=invert.hel[invert.hel[,2]!="Trans",]
 dim(invert.heledge)
 hel.rda.fulsoil = rda(invert.heledge[,7:8:92]~invert.heledge[,3])
 anova(hel.rda.fulsoil)
@@ -521,6 +820,7 @@ global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
 ##INVERTS BY ECOSYSTEM
 #RDA analysis
+rdadate1=commdata[commdata$Date=="8.10.16",]
 rdadate1=commdata[commdata$Date=="8.10.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
 inverttrees=merge(rdadate1,tree.ringsum3)
 dim(inverttrees)
@@ -538,7 +838,7 @@ RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 #Everything BUT the Transition
-invert.heledge=invert.hel[invert.hel[,2]!="Edge",]
+invert.heledge=invert.hel[invert.hel[,2]!="Trans",]
 dim(invert.heledge)
 hel.rda.fulsoil = rda(invert.heledge[,5:80]~invert.heledge[,3])
 anova(hel.rda.fulsoil)
@@ -665,13 +965,29 @@ RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 #Everything BUT the Transition
-invert.heledge=invert.hel[invert.hel[,2]!="Edge",]
+invert.heledge=invert.hel[invert.hel[,2]!="Trans",]
 dim(invert.heledge)
 hel.rda.fulsoil = rda(invert.heledge[7:72]~invert.heledge[,3])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
+###ALL plots in an RDA
+metatest=merge(commdata,soildata,by="Plot")
+metatest=na.exclude(metatest)
+hel.rda.fulsoil = rda(metatest[,8:158], metatest[,168:192])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+# Here is the forward selection command and then constructing a model with selected variables.
+hel.rda.for=forward.sel(metatest[,8:158], metatest[,52:76], adjR2thresh=global.thresh)
+#hel.rda.for
+
+#Forward selection using Ordistep
+invert.rda.full=rda(metatest[,8:158]~metatest$Ptot_long+metatest$Po_long+metatest$pH_long+metatest$moist_long +metatest$ps1_long+metatest$ps2_long+metatest$percc_long+metatest$cton_long+metatest$Ptot_nug+metatest$Po_nug+metatest$pH_nug+metatest$moist_nug+metatest$ps1_nug+metatest$ps2_nug+metatest$percc_nug+metatest$pomc_nug+metatest$cton_nug+metatest$Ptot_short+metatest$Po_short+metatest$pH_short+metatest$moist_short+metatest$ps1_short+metatest$percc_short+metatest$pomc_short+metatest$cton_short)
+invert.rda.none=rda(metatest[,8:158]~1)
+invert.sel=ordiR2step(invert.rda.none,scope=formula(invert.rda.full),Pin=0.05,R2scope=TRUE)
+invert.sel
 
 ````
 
@@ -680,13 +996,13 @@ ALL PLOTS on commdata$Habitat
 Date 1 (10.6.15):   p=0.81
 Date 2 (5.5.16):    p=0.645
 Date 3 (8.10.16):   p=0.321
-Date 4 (10.16.15):  p=0.036*
+Date 4 (10.16.15):  p=0.036* Adj R2=0.26
 
 ONLy CORE PLOTS plots by habitat
 Date 1 (10.6.15):   p=0.008*
 Date 2 (5.5.16):    p=0.191
 Date 3 (8.10.16):   p=0.435
-Date 4 (10.16.15):  p=0.244
+Date 4 (10.16.15):  p=0.001* Adj R2=0.18
 
 ALL PLOTS to soil variables:
 Date 1 (10.6.15):   p=0.305
