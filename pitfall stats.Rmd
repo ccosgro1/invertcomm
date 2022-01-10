@@ -19,8 +19,19 @@ treedata=read.csv("C:/Users/crc31/Dropbox/Jennings 2016/New Adult Basal Area.csv
 #fiddle with the tree data
 treedata[is.na(treedata)] <- 0
 treedata=treedata[treedata$ecosys!="S",] #Remove the stream plots -- Will need to put these back in when I fix the commdata$ecosystem columns.
-dim(treedata)
-#####Need to figure out the tree lumping thing####
+tree.ringsum=treedata[1:83,]
+for(i in 1:83) {
+	tree.ringsum[i,10:42]=treedata[i,10:42]+treedata[i+83,10:42]+treedata[i+166,10:42]  }
+rownames(tree.ringsum)=tree.ringsum[,1]
+# Let's look at a rank abbundance plot for fun
+tree.colsums=apply(tree.ringsum[,10:42],2,sum)
+plot(rank(tree.colsums),tree.colsums, xlab="tree species")
+
+# Perform Hellinger transformation on tree species data so that RDA is based on Hellinger distance
+tree.rowsums=apply(tree.ringsum[,10:42],1,sum)
+tree.hel=tree.ringsum
+tree.hel[,10:42]=tree.hel[,10:42]/tree.rowsums
+tree.hel[,10:42]=sqrt(tree.hel[,10:42])
 
 #change NAs in the count columns to 0s.
 pitfall[is.na(pitfall)]<-0
@@ -99,8 +110,14 @@ anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
-#### Will do variance partitioning after I figure out what I'm doing with the tree data b/c it's combined plots and not half plots.####
-
+## Variance partitioning
+varpart(tree.hel.all.pcnm[,5:205], tree.hel.all.pcnm[,c(264,259)], tree.hel.all.pcnm[,c(249,240,230,232)])
+## Check to see if it's significant when PCNM and soil come first.
+hel.rda.all.partpcnm=rda(tree.hel.all.pcnm[,5:205], tree.hel.all.pcnm[,c(264,259)], tree.hel.all.pcnm[,c(249,240,230,232)])
+anova(hel.rda.all.partpcnm)
+# Yes.
+hel.rda.all.partsoil=rda(tree.hel.all.pcnm[,5:205], tree.hel.all.pcnm[,c(249,240,230,232)], tree.hel.all.pcnm[,c(264,259)])
+anova(hel.rda.all.partsoil)
 
 
 ####CORE PLOTS####
@@ -157,7 +174,15 @@ anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
-####Variance partitioning to come####
+## Variance partitioning
+varpart(tree.hel.all.pcnm[,5:205], tree.hel.all.pcnm[,c(239,248)], tree.hel.all.pcnm[,c(260,255,280,273)])
+## Check to see if it's significant when PCNM and soil come first.
+hel.rda.all.partpcnm=rda(tree.hel.all.pcnm[,5:205], tree.hel.all.pcnm[,c(260,255,280,273)], tree.hel.all.pcnm[,c(239,248)])
+anova(hel.rda.all.partpcnm)
+# Yes.
+hel.rda.all.partsoil=rda(tree.hel.all.pcnm[,5:205], tree.hel.all.pcnm[,c(239,248)], tree.hel.all.pcnm[,c(260,255,280,273)])
+anova(hel.rda.all.partsoil)
+# No.
 
 ####CORE+EDGE####
 date1=date1.2[date1.2$EP!="Trans",]
@@ -198,7 +223,7 @@ anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
-####Variance partitioning to come####
+## Variance partitioning - Not needed because there's no pcnm effect
 ```
 ```{r RDA Date 2}
 #remove NAs.
@@ -226,7 +251,6 @@ anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 #### Will do variance partitioning after I figure out what I'm doing with the tree data b/c it's combined plots and not half plots.####
-
 
 
 ####CORE PLOTS####
@@ -283,7 +307,16 @@ anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
-####Variance partitioning to come####
+## Variance partitioning
+varpart(tree.hel.all.pcnm[,5:205], tree.hel.all.pcnm[,c(246,253)], tree.hel.all.pcnm[,c(258,255,272,259,276)])
+## Check to see if it's significant when PCNM and soil come first.
+hel.rda.all.partpcnm=rda(tree.hel.all.pcnm[,5:205], tree.hel.all.pcnm[,c(258,255,272,259,276)], tree.hel.all.pcnm[,c(246,253)])
+anova(hel.rda.all.partpcnm)
+# Yes.
+hel.rda.all.partsoil=rda(tree.hel.all.pcnm[,5:205], tree.hel.all.pcnm[,c(246,253)], tree.hel.all.pcnm[,c(258,255,272,259,276)])
+anova(hel.rda.all.partsoil)
+# Yes.
+
 
 ####CORE+EDGE####
 date2=date2.2[date2.2$EP!="Trans",]
@@ -324,7 +357,7 @@ anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
-####Variance partitioning to come####
+## Variance partitioning - Not needed becausse no soil/pcnm effects.
 ```
 ```{r RDA Date 3}
 #remove NAs.
@@ -383,8 +416,15 @@ anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
-#### Will do variance partitioning after I figure out what I'm doing with the tree data b/c it's combined plots and not half plots.####
-
+## Variance partitioning
+varpart(tree.hel.all.pcnm[,5:205], tree.hel.all.pcnm[,c(252,238)], tree.hel.all.pcnm[,c(255,276,267,256,262,257,289)])
+## Check to see if it's significant when PCNM and soil come first.
+hel.rda.all.partpcnm=rda(tree.hel.all.pcnm[,5:205], tree.hel.all.pcnm[,c(255,276,267,256,262,257,289)], tree.hel.all.pcnm[,c(252,238)])
+anova(hel.rda.all.partpcnm)
+# Yes.
+hel.rda.all.partsoil=rda(tree.hel.all.pcnm[,5:205], tree.hel.all.pcnm[,c(252,238)], tree.hel.all.pcnm[,c(255,276,267,256,262,257,289)])
+anova(hel.rda.all.partsoil)
+# Yes.
 
 
 ####CORE PLOTS####
@@ -427,7 +467,7 @@ RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
 
-####Variance partitioning to come####
+## Variance partitioning not needed because there's no pcnm effect.
 
 ####CORE+EDGE####
 date3=date3.2[date3.2$EP!="Trans",]
@@ -468,7 +508,7 @@ anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
-####Variance partitioning to come####
+## Variance partitioning not needed because no pcnm effect.
 ```
 ```{r RDA Date 4}
 #remove NAs.
@@ -495,8 +535,7 @@ hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:205], tree.hel.all.pcnm[,255:316])
 anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
-#### Will do variance partitioning after I figure out what I'm doing with the tree data b/c it's combined plots and not half plots.####
-
+## No variance partitioning because no soil/pcnm effect
 
 
 ####CORE PLOTS####
@@ -522,7 +561,7 @@ anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
-####Variance partitioning to come####
+## No variance partitioning because no soil/pcnm effects
 
 ####CORE+EDGE####
 date4=date4.2[date4.2$EP!="Trans",]
@@ -547,5 +586,5 @@ anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
-####Variance partitioning to come####
+## No variance partitioning because no soil/pcnm effects.
 ```
