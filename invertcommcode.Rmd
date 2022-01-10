@@ -1,6 +1,6 @@
 ---
 title: "Jennings Invertrbrate Community"
-author: "Colleen Cosgrove"
+author: "crc31 Cosgrove"
 date: "4 October 2018"
 output: html_document
 editor_options: 
@@ -19,16 +19,16 @@ knitr::opts_chunk$set(echo = TRUE)
 library(gtools)
 
 ##Load invert community files and merge them into one csv file.
-date4=read.csv("C:/Users/Colleen/Dropbox/Jennings Invertebrates/beerbottles_10.15.16.csv")
+date4=read.csv("C:/Users/crc31/Dropbox/Jennings Invertebrates/beerbottles_10.15.16.csv")
 date4[is.na(date4)]<-0
 date4=date4[c(1:93),c(1:129)]
-date3=read.csv("C:/Users/Colleen/Dropbox/Jennings Invertebrates/beerbottles_8.10.16.csv")
+date3=read.csv("C:/Users/crc31/Dropbox/Jennings Invertebrates/beerbottles_8.10.16.csv")
 date3[is.na(date3)]<-0
 date3=date3[c(1:95),c(1:115)]
-date2=read.csv("C:/Users/Colleen/Dropbox/Jennings Invertebrates/beerbottles_5.15.16.csv")
+date2=read.csv("C:/Users/crc31/Dropbox/Jennings Invertebrates/beerbottles_5.15.16.csv")
 date2[is.na(date2)]<-0
 date2=date2[c(1:95),c(1:117)]
-date1=read.csv("C:/Users/Colleen/Dropbox/Jennings Invertebrates/beerbottles_10.6.15.csv")
+date1=read.csv("C:/Users/crc31/Dropbox/Jennings Invertebrates/beerbottles_10.6.15.csv")
 date1[is.na(date1)]<-0
 date1=date1[c(1:91),c(1:80)]
 colnames(date1)
@@ -46,7 +46,7 @@ commdata=commdata[-c(91,186,281,374),]
 commdata[is.na(commdata)]<-0
 is.na(commdata)
 
-write.csv(commdata,"invertcommdata2.csv")
+#write.csv(commdata,"invertcommdata2.csv")
 ```
 
 or the EntSA poster:
@@ -56,18 +56,17 @@ or the EntSA poster:
 
 
 ```{r Load data}
-#SET UP
-
 #Load Data
-commdata=read.csv("C:/Users/Colleen/OneDrive/Documents/School/Research/Data/Inverts/invertcomm/invertcommdata.csv", header=T)
-treedata=read.csv("C:/Users/Colleen/Dropbox/Jennings 2016/New Adult Basal Area.csv")
-soildata=read.csv("C:/Users/Colleen/OneDrive/Documents/School/Grad School/SpatialStats/soil data May 08 for tree plots.csv")
+commdata=read.csv("C:/Users/crc31/OneDrive/Documents/School/Research/Data/Inverts/invertcomm/invertcommdata.csv", header=T)
+treedata=read.csv("C:/Users/crc31/Dropbox/Jennings 2016/New Adult Basal Area.csv")
+soildata=read.csv("C:/Users/crc31/OneDrive/Documents/School/Grad School/SpatialStats/soil data May 08 for tree plots.csv")
 dim(soildata)
 treedata[is.na(treedata)] <- 0
 treedata=treedata[treedata$ecosys!="S",] #Remove the stream plots -- Will need to put these back in when I fix the commdata$ecosystem columns.
 dim(treedata)
 ##Tree SPP which are OVER 1% of total basal area: ACERUB, ACESAC, CARCOR, CAROVA, FAGAME, FRAAME, LIRTUP, PLAOCC, POPDEL, PRUSER, QUEALB, QUEPAL, QUERUB, TILAME
 
+##Combine tree data and hellinger transform
 tree.ringsum=treedata[1:83,]
 for(i in 1:83) {
 	tree.ringsum3=treedata[i,10:42]+treedata[i+83,10:42]+treedata[i+166,10:42]  }
@@ -77,12 +76,21 @@ for(i in 1:83) {
 	tree.ringsum1=treedata[i,10:42] }
 rownames(tree.ringsum)=tree.ringsum[,1]
 
+tree.rowsums=apply(tree.ringsum,1,sum)
+tree.hel=tree.ringsum
+tree.hel[,10:42]=tree.hel[,10:42]/tree.rowsums
+tree.hel[,10:42]=sqrt(tree.hel[,10:42])
+
+## Load libraries - Do I even need all of these?
 library(vegan)
-library(packfor)
 library(nlme)
 library(ggplot2)
 library(lme4)
 dim(commdata)
+
+#merge soil and tree data with commdata
+commdata=merge(commdata,soildata, by="Plot")
+commdata=merge(commdata,tree.hel)
 
 #Separate out dates for future lines of code:
 date4=commdata[commdata$Date=="10.15.16",]
@@ -485,21 +493,17 @@ lme(Hdate1~Habitat+Plot, data=date1)
 
 
 ```{r RDA DATE1}
-#RDA analysis
-dim(commdata)
-colnames(commdata)!="Drosophilidae..Drosophila"
-rdadate1=commdata[commdata$Date=="10.6.15",]
-#REMOVE FRUIT FLIES
+## Remove fruitflies from the analyses
 rdadate1=commdata[commdata$Date=="10.6.15",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
 dim(rdadate1)
 
-tree.hel.soil=merge(rdadate1,soildata, by="Plot")
+#### All plots
+tree.hel.soil=rdadate1
 dim(tree.hel.soil)
 rownames(tree.hel.soil)=tree.hel.soil[,1]
 tree.hel.soil=na.exclude(tree.hel.soil)
 # Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
 colnames(tree.hel.soil)
-tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core"|tree.hel.soil$EP=="Transition",]
 dim(tree.hel.soil)
 
 hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
@@ -507,69 +511,18 @@ anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
-dim(tree.hel.soil)
-colnames(tree.hel.soil)
-##Forward Selection to pick important tree species
-#hel.rda.for=forward.sel(tree.hel.soil[,9:158], tree.hel.soil[,168:192], adjR2thresh=global.thresh)
-#hel.rda.for
-#names(tree.hel.soil)
-#hel.rda.selsoil = rda(tree.hel.soil[,10:42],tree.hel.soil$ps1_short)
-#anova(hel.rda.selsoil)
-#RsquareAdj(hel.rda.selsoil)
-#plot(hel.rda.selsoil)
-
 ###INVERT BY TREE DATA
-colnames(tree.ringsum1)
 dim(rdadate1)
-inverttrees=merge(rdadate1,tree.ringsum)
-dim(inverttrees)
-invert.colsums=apply(inverttrees[,8:155],2,sum)
-
-colnames(inverttrees)
-invert.hel=inverttrees[,which(invert.colsums!=0)]
-dim(invert.hel)
-
-invert.hel=decostand(invert.hel, method="hellinger")
-rownames(invert.hel)=invert.hel[,1]
-
-tree.rowsums=apply(tree.ringsum3,1,sum)
-tree.hel=tree.ringsum
-tree.hel[,10:42]=tree.hel[,10:42]/tree.rowsums
-tree.hel[,10:42]=sqrt(tree.hel[,10:42])
-rownames(tree.hel)
-
-invert.hel=invert.hel[invert.hel$TerrType!="S",]
-tree.hel=tree.hel[tree.hel$Plot!="M4",]
-tree.hel=tree.hel[tree.hel$Plot!="I3/4",]
-
-tree.hel.soil=cbind(tree.hel,invert.hel[,6:67])
-dim(tree.hel.soil)
-rownames(tree.hel.soil)=tree.hel.soil[,1]
-tree.hel.soil=na.exclude(tree.hel.soil)
-# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
-colnames(tree.hel.soil)
-#tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core",]
-dim(tree.hel.soil)
-
-hel.rda.fulsoil = rda(tree.hel.soil[,46:107],tree.hel.soil[,c(8,9,13,14,18,09,22,27,28,30,31,33,34,37)])
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155],tree.hel.soil[,c(195:229)])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
-# Here is the forward selection command and then constructing a model with selected variables.
-#hel.rda.for=forward.sel(tree.hel.soil[,8:158],tree.hel.soil[,c(159,160,164,165,169,170,173,178,179,81,182,184,185,188)], adjR2thresh=global.thresh)
-#hel.rda.for
-#names(tree.hel.soil)
-#hel.rda.selsoil = rda(tree.hel.soil[,10:42] ~ as.matrix(tree.hel.soil[,c(52,54,56,57,58)]))
-#anova(hel.rda.selsoil)
-#RsquareAdj(hel.rda.selsoil)
-#plot(hel.rda.selsoil)
-
 
 ###INVERTS BY PCMN
 #to determine spatial autocorrelation
 # First we perform PCNM to get the vectors
 colnames(tree.hel.soil)
-all.geog.dist=vegdist(tree.hel.soil[,8:9],method="euclid")
+all.geog.dist=vegdist(tree.hel.soil[,193:194],method="euclid")
 all.pcnm1=pcnm(all.geog.dist)
 all.pcnmvecs=all.pcnm1$vectors
 # If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
@@ -577,110 +530,215 @@ all.pcnmvecs=all.pcnm1$vectors
 tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
 names(tree.hel.all.pcnm)
 # Now run step 1, global analysis
-hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,46:107], tree.hel.all.pcnm[,111:154])
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:273])
 anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 # now run step 2, the selection part
-#hel.rda.all.forpcnm=forward.sel(tree.hel.all.pcnm[,10:42], tree.hel.all.pcnm[,77:120], #adjR2thresh=global.thresh)
-#hel.rda.all.forpcnm
-# Let's store a model using the selected variables only
-#names(tree.hel.all.pcnm)
-#hel.rda.all.selpcnm = rda(tree.hel.all.pcnm[,10:42] ~ as.matrix(tree.hel.all.pcnm[,c(77:81,83:86)]))
-#anova(hel.rda.all.selpcnm)
-#RsquareAdj(hel.rda.all.selpcnm)
 
+#forward selection for our PCNM variables
+hel.rda.all.pcnm.none=rda(tree.hel.all.pcnm[,8:155]~1)
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:273])
+
+hel.rda.all.pcnm.full=rda(tree.hel.all.pcnm[,8:155]~tree.hel.all.pcnm$PCNM1+tree.hel.all.pcnm$PCNM2+tree.hel.all.pcnm$PCNM3+tree.hel.all.pcnm$PCNM4+tree.hel.all.pcnm$PCNM5+tree.hel.all.pcnm$PCNM6+tree.hel.all.pcnm$PCNM7+tree.hel.all.pcnm$PCNM8+tree.hel.all.pcnm$PCNM9+tree.hel.all.pcnm$PCNM10+tree.hel.all.pcnm$PCNM11+tree.hel.all.pcnm$PCNM12+tree.hel.all.pcnm$PCNM13+tree.hel.all.pcnm$PCNM14+tree.hel.all.pcnm$PCNM15+tree.hel.all.pcnm$PCNM16+tree.hel.all.pcnm$PCNM17+tree.hel.all.pcnm$PCNM18+tree.hel.all.pcnm$PCNM19+tree.hel.all.pcnm$PCNM20+tree.hel.all.pcnm$PCNM21+tree.hel.all.pcnm$PCNM22+tree.hel.all.pcnm$PCNM23+tree.hel.all.pcnm$PCNM24+tree.hel.all.pcnm$PCNM25+tree.hel.all.pcnm$PCNM26+tree.hel.all.pcnm$PCNM27+tree.hel.all.pcnm$PCNM28+tree.hel.all.pcnm$PCNM29+tree.hel.all.pcnm$PCNM30+tree.hel.all.pcnm$PCNM31+tree.hel.all.pcnm$PCNM32+tree.hel.all.pcnm$PCNM33+tree.hel.all.pcnm$PCNM34+tree.hel.all.pcnm$PCNM35+tree.hel.all.pcnm$PCNM36+tree.hel.all.pcnm$PCNM37+tree.hel.all.pcnm$PCNM38+tree.hel.all.pcnm$PCNM39+tree.hel.all.pcnm$PCNM40+tree.hel.all.pcnm$PCNM41+tree.hel.all.pcnm$PCNM42+tree.hel.all.pcnm$PCNM43)
+
+tree.sel=ordiR2step(hel.rda.all.pcnm.none,scope=formula(hel.rda.all.pcnm.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(234,242,232,235,240)])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
 ##INVERTS BY ECOSYSTEM
-#RDA analysis
-invert.hel=inverttrees[,which(invert.colsums!=0)]
-dim(invert.hel)
-invert.hel=decostand(invert.hel, method="hellinger")
-rownames(invert.hel)=invert.hel[,1]
-
-#Just the CORE Plots
-invert.hel=invert.hel[invert.hel$EP=="Core",]
-hel.rda.fulsoil = rda(invert.hel[,8:67]~invert.hel$Habitat)
+hel.rda.fulsoil = rda(rdadate1[,8:155]~rdadate1$Habitat)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
-#Everything BUT the Transition
-invert.hel=invert.hel[invert.hel$EP=="Core"|invert.hel$EP=="Trans"|invert.hel$EP=="Edge",]
-dim(invert.hel)
-hel.rda.fulsoil = rda(invert.hel[,8:67]~invert.hel$Habitat)
+#### Core plots ####
+tree.hel.soil=rdadate1[rdadate1$EP=="Core",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+dim(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
+###INVERT BY TREE DATA
+dim(rdadate1)
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155],tree.hel.soil[,c(195:229)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,193:194],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:254])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+# now run step 2, the selection part
+
+#forward selection for our PCNM variables
+hel.rda.all.pcnm.none=rda(tree.hel.all.pcnm[,8:155]~1)
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:254])
+
+hel.rda.all.pcnm.full=rda(tree.hel.all.pcnm[,8:155]~tree.hel.all.pcnm$PCNM1+tree.hel.all.pcnm$PCNM2+tree.hel.all.pcnm$PCNM3+tree.hel.all.pcnm$PCNM4+tree.hel.all.pcnm$PCNM5+tree.hel.all.pcnm$PCNM6+tree.hel.all.pcnm$PCNM7+tree.hel.all.pcnm$PCNM8+tree.hel.all.pcnm$PCNM9+tree.hel.all.pcnm$PCNM10+tree.hel.all.pcnm$PCNM11+tree.hel.all.pcnm$PCNM12+tree.hel.all.pcnm$PCNM13+tree.hel.all.pcnm$PCNM14+tree.hel.all.pcnm$PCNM15+tree.hel.all.pcnm$PCNM16+tree.hel.all.pcnm$PCNM17+tree.hel.all.pcnm$PCNM18+tree.hel.all.pcnm$PCNM19+tree.hel.all.pcnm$PCNM20+tree.hel.all.pcnm$PCNM21+tree.hel.all.pcnm$PCNM22+tree.hel.all.pcnm$PCNM23+tree.hel.all.pcnm$PCNM24)
+
+tree.sel=ordiR2step(hel.rda.all.pcnm.none,scope=formula(hel.rda.all.pcnm.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(231:232,235)])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155]~tree.hel.soil$Habitat)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+#### CORE+EDGE ####
+tree.hel.soil=rdadate1[rdadate1$EP=="Core"|rdadate1$EP=="Edge",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Forward selection
+hel.rda.fulsoil.none = rda(tree.hel.soil[,8:155]~1)
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
+
+hel.rda.fulsoil.full=rda(tree.hel.soil[,8:155]~tree.hel.soil$Ptot_long+tree.hel.soil$Po_long+tree.hel.soil$pH_long+tree.hel.soil$moist_long+tree.hel.soil$ps1_long+tree.hel.soil$ps2_long+tree.hel.soil$percc_long+tree.hel.soil$cton_long+tree.hel.soil$Ptot_nug+tree.hel.soil$Po_nug+tree.hel.soil$pH_nug+tree.hel.soil$moist_nug+tree.hel.soil$ps1_nug+tree.hel.soil$ps2_nug+tree.hel.soil$percc_nug+tree.hel.soil$pomc_nug+tree.hel.soil$cton_nug+tree.hel.soil$Ptot_short+tree.hel.soil$Po_short+tree.hel.soil$pH_short+tree.hel.soil$moist_short+tree.hel.soil$ps1_short+tree.hel.soil$percc_short+tree.hel.soil$pomc_short+tree.hel.soil$cton_short)
+
+tree.sel=ordiR2step(hel.rda.fulsoil.none,scope=formula(hel.rda.fulsoil.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,c(172,176)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155],tree.hel.soil[,c(195:229)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,193:194],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:268])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+# now run step 2, the selection part
+
+#forward selection for our PCNM variables
+hel.rda.all.pcnm.none=rda(tree.hel.all.pcnm[,8:155]~1)
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:268])
+
+hel.rda.all.pcnm.full=rda(tree.hel.all.pcnm[,8:155]~tree.hel.all.pcnm$PCNM1+tree.hel.all.pcnm$PCNM2+tree.hel.all.pcnm$PCNM3+tree.hel.all.pcnm$PCNM4+tree.hel.all.pcnm$PCNM5+tree.hel.all.pcnm$PCNM6+tree.hel.all.pcnm$PCNM7+tree.hel.all.pcnm$PCNM8+tree.hel.all.pcnm$PCNM9+tree.hel.all.pcnm$PCNM10+tree.hel.all.pcnm$PCNM11+tree.hel.all.pcnm$PCNM12+tree.hel.all.pcnm$PCNM13+tree.hel.all.pcnm$PCNM14+tree.hel.all.pcnm$PCNM15+tree.hel.all.pcnm$PCNM16+tree.hel.all.pcnm$PCNM17+tree.hel.all.pcnm$PCNM18+tree.hel.all.pcnm$PCNM19+tree.hel.all.pcnm$PCNM20+tree.hel.all.pcnm$PCNM21+tree.hel.all.pcnm$PCNM22+tree.hel.all.pcnm$PCNM23+tree.hel.all.pcnm$PCNM24+tree.hel.all.pcnm$PCNM25+tree.hel.all.pcnm$PCNM26+tree.hel.all.pcnm$PCNM27+tree.hel.all.pcnm$PCNM28+tree.hel.all.pcnm$PCNM29+tree.hel.all.pcnm$PCNM30+tree.hel.all.pcnm$PCNM31+tree.hel.all.pcnm$PCNM32+tree.hel.all.pcnm$PCNM33+tree.hel.all.pcnm$PCNM34+tree.hel.all.pcnm$PCNM35+tree.hel.all.pcnm$PCNM36+tree.hel.all.pcnm$PCNM37+tree.hel.all.pcnm$PCNM38)
+
+tree.sel=ordiR2step(hel.rda.all.pcnm.none,scope=formula(hel.rda.all.pcnm.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(234,254,246,233,241)])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(rdadate1[,8:155]~rdadate1$Habitat)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+## Variance partitioning
+varpart(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(172,176)], tree.hel.all.pcnm[,c(234,254,246,233,241)])
+## Check to see if it's significant when PCNM and soil come first.
+hel.rda.all.partpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(172,176)], tree.hel.all.pcnm[,c(234,254,246,233,241)])
+anova(hel.rda.all.partpcnm)
+# Yes.
+hel.rda.all.partsoil=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(234,254,246,233,241)], tree.hel.all.pcnm[,c(172,176)])
+anova(hel.rda.all.partsoil)
 ````
 
 ```{r RDA DATE2}
-#RDA analysis
-dim(commdata)
-colnames(commdata)
-rdadate1=commdata[commdata$Date=="5.5.16",]
+## Remove fruitflies from the analyses
+rdadate2=commdata[commdata$Date=="5.5.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
+dim(rdadate2)
 
-tree.hel.soil=merge(rdadate1,soildata, by="Plot")
+#### All plots
+tree.hel.soil=rdadate2
 dim(tree.hel.soil)
 rownames(tree.hel.soil)=tree.hel.soil[,1]
 tree.hel.soil=na.exclude(tree.hel.soil)
 # Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
 colnames(tree.hel.soil)
-#tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core",]
-#dim(tree.hel.soil)
+dim(tree.hel.soil)
 
-hel.rda.fulsoil = rda(tree.hel.soil[,8:158],tree.hel.soil[,168:192])
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
-# Here is the forward selection command and then constructing a model with selected variables.
-#hel.rda.for=forward.sel(tree.hel.soil[,10:42], tree.hel.soil[,52:76], adjR2thresh=global.thresh)
-#hel.rda.for
-#names(tree.hel.soil)
-#hel.rda.selsoil = rda(tree.hel.soil[,10:42] ~ as.matrix(tree.hel.soil[,c(52,54,56,57,58)]))
-#anova(hel.rda.selsoil)
-#RsquareAdj(hel.rda.selsoil)
-#plot(hel.rda.selsoil)
+
+##Forward selection
+hel.rda.fulsoil.none = rda(tree.hel.soil[,8:155]~1)
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
+
+hel.rda.fulsoil.full=rda(tree.hel.soil[,8:155]~tree.hel.soil$Ptot_long+tree.hel.soil$Po_long+tree.hel.soil$pH_long+tree.hel.soil$moist_long+tree.hel.soil$ps1_long+tree.hel.soil$ps2_long+tree.hel.soil$percc_long+tree.hel.soil$cton_long+tree.hel.soil$Ptot_nug+tree.hel.soil$Po_nug+tree.hel.soil$pH_nug+tree.hel.soil$moist_nug+tree.hel.soil$ps1_nug+tree.hel.soil$ps2_nug+tree.hel.soil$percc_nug+tree.hel.soil$pomc_nug+tree.hel.soil$cton_nug+tree.hel.soil$Ptot_short+tree.hel.soil$Po_short+tree.hel.soil$pH_short+tree.hel.soil$moist_short+tree.hel.soil$ps1_short+tree.hel.soil$percc_short+tree.hel.soil$pomc_short+tree.hel.soil$cton_short)
+
+tree.sel=ordiR2step(hel.rda.fulsoil.none,scope=formula(hel.rda.fulsoil.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,c(168,181)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 
 ###INVERT BY TREE DATA
-colnames(tree.ringsum)
-dim(tree.ringsum)
-rownames(rdadate1)=rdadate1[,1]
-inverttrees=merge(rdadate1,tree.ringsum3)
-dim(inverttrees)
-invert.colsums=apply(inverttrees[,8:158],2,sum)
-
-colnames(invert.hel)
-invert.hel=cbind(inverttrees$Plot,inverttrees[,which(invert.colsums!=0)])
-invert.hel=decostand(invert.hel, method="hellinger")
-
-dim(invert.hel)
-colnames(invert.hel)
-
-tree.rowsums=apply(tree.ringsum3,1,sum)
-tree.hel=tree.ringsum
-tree.hel[,10:42]=tree.hel[,10:42]/tree.rowsums
-tree.hel[,10:42]=sqrt(tree.hel[,10:42])
-
-dim(invert.hel)
-dim(tree.hel)
-invert.hel=invert.hel[invert.hel$TerrType!="S",]
-rownames(invert.hel)=invert.hel[,1]
-dim(invert.hel)
-tree.hel=tree.hel[tree.hel$Plot!="M4",]
-
-tree.hel.soil=cbind(tree.hel,invert.hel[,6:72])
-dim(tree.hel.soil)
-rownames(tree.hel.soil)=tree.hel.soil[,1]
-tree.hel.soil=na.exclude(tree.hel.soil)
-# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
-colnames(tree.hel.soil)
-#tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core",]
-dim(tree.hel.soil)
-
-hel.rda.fulsoil = rda(tree.hel.soil[,46:112],tree.hel.soil[,c(8,9,13,14,18,09,22,27,28,30,31,33,34,37)])
+dim(rdadate1)
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155],tree.hel.soil[,c(195:229)])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -689,112 +747,206 @@ global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 #to determine spatial autocorrelation
 # First we perform PCNM to get the vectors
 colnames(tree.hel.soil)
-all.geog.dist=vegdist(tree.hel.soil[,8:9],method="euclid")
+all.geog.dist=vegdist(tree.hel.soil[,193:194],method="euclid")
 all.pcnm1=pcnm(all.geog.dist)
 all.pcnmvecs=all.pcnm1$vectors
 # If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
 #tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
 tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
-tree.hel.all.pcnm=tree.hel.all.pcnm[tree.hel.all.pcnm$EP=="Core",]
+names(tree.hel.all.pcnm)
 # Now run step 1, global analysis
-hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,46:112], tree.hel.all.pcnm[,113:160])
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:273])
 anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
-# NON significant - don't run step 2. To find step 2, see Blackwood et al code from Monographs paper
+# now run step 2, the selection part
 
 ##INVERTS BY ECOSYSTEM
-#RDA analysis
-rdadate1=commdata[commdata$Date=="5.5.16",]
-rdadate1=commdata[commdata$Date=="5.5.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
-inverttrees=merge(rdadate1,tree.ringsum3)
-dim(inverttrees)
-invert.colsums=apply(inverttrees[,8:158],2,sum)
-invert.hel=cbind(inverttrees$Plot,inverttrees$EP,inverttrees$Habitat,inverttrees[,which(invert.colsums!=0)])
-dim(invert.hel)
-invert.hel=decostand(invert.hel, method="hellinger")
-rownames(invert.hel)=invert.hel[,1]
-
-#Just the CORE Plots
-invert.helcore=invert.hel[invert.hel[,2]=="Core",]
-hel.rda.fulsoil = rda(invert.helcore[,8:92]~invert.helcore[,3])
+hel.rda.fulsoil = rda(rdadate1[,8:155]~rdadate1$Habitat)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
-#Everything BUT the Transition
-invert.heledge=invert.hel[invert.hel[,2]!="Trans",]
-dim(invert.heledge)
-hel.rda.fulsoil = rda(invert.heledge[,7:8:92]~invert.heledge[,3])
+#### Core plots ####
+tree.hel.soil=rdadate2[rdadate2$EP=="Core",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+dim(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Forward selection
+hel.rda.fulsoil.none = rda(tree.hel.soil[,8:155]~1)
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
+
+hel.rda.fulsoil.full=rda(tree.hel.soil[,8:155]~tree.hel.soil$Ptot_long+tree.hel.soil$Po_long+tree.hel.soil$pH_long+tree.hel.soil$moist_long+tree.hel.soil$ps1_long+tree.hel.soil$ps2_long+tree.hel.soil$percc_long+tree.hel.soil$cton_long+tree.hel.soil$Ptot_nug+tree.hel.soil$Po_nug+tree.hel.soil$pH_nug+tree.hel.soil$moist_nug+tree.hel.soil$ps1_nug+tree.hel.soil$ps2_nug+tree.hel.soil$percc_nug+tree.hel.soil$pomc_nug+tree.hel.soil$cton_nug+tree.hel.soil$Ptot_short+tree.hel.soil$Po_short+tree.hel.soil$pH_short+tree.hel.soil$moist_short+tree.hel.soil$ps1_short+tree.hel.soil$percc_short+tree.hel.soil$pomc_short+tree.hel.soil$cton_short)
+
+tree.sel=ordiR2step(hel.rda.fulsoil.none,scope=formula(hel.rda.fulsoil.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,c(165)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+dim(rdadate1)
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155],tree.hel.soil[,c(195:229)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,193:194],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:254])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155]~tree.hel.soil$Habitat)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 
+#### CORE+EDGE ####
+tree.hel.soil=rdadate2[rdadate$EP=="Core"|rdadate1$EP=="Edge",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Forward selection
+hel.rda.fulsoil.none = rda(tree.hel.soil[,8:155]~1)
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
+
+hel.rda.fulsoil.full=rda(tree.hel.soil[,8:155]~tree.hel.soil$Ptot_long+tree.hel.soil$Po_long+tree.hel.soil$pH_long+tree.hel.soil$moist_long+tree.hel.soil$ps1_long+tree.hel.soil$ps2_long+tree.hel.soil$percc_long+tree.hel.soil$cton_long+tree.hel.soil$Ptot_nug+tree.hel.soil$Po_nug+tree.hel.soil$pH_nug+tree.hel.soil$moist_nug+tree.hel.soil$ps1_nug+tree.hel.soil$ps2_nug+tree.hel.soil$percc_nug+tree.hel.soil$pomc_nug+tree.hel.soil$cton_nug+tree.hel.soil$Ptot_short+tree.hel.soil$Po_short+tree.hel.soil$pH_short+tree.hel.soil$moist_short+tree.hel.soil$ps1_short+tree.hel.soil$percc_short+tree.hel.soil$pomc_short+tree.hel.soil$cton_short)
+
+tree.sel=ordiR2step(hel.rda.fulsoil.none,scope=formula(hel.rda.fulsoil.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,c(168,173,179,166)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155],tree.hel.soil[,c(195:229)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+hel.rda.fulsoil.none = rda(tree.hel.soil[,8:155]~1)
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,195:229])
+
+hel.rda.fulsoil.full=rda(tree.hel.soil[,8:155]~tree.hel.soil$ACERUB+tree.hel.soil$ACESAC+tree.hel.soil$ACESIL+tree.hel.soil$BETALL+tree.hel.soil$CARCAR+tree.hel.soil$CARCOR+tree.hel.soil$CAROVA+tree.hel.soil$CARTOM+tree.hel.soil$CORFLO+tree.hel.soil$CRAPUN+tree.hel.soil$CORFLO+tree.hel.soil$FAGAME+tree.hel.soil$FRAAME+tree.hel.soil$FRANIG+tree.hel.soil$HAMVIR+tree.hel.soil$LIRTUP+tree.hel.soil$MAGACU+tree.hel.soil$MALCOR+tree.hel.soil$NYSSYL+tree.hel.soil$OSTVIR+tree.hel.soil$PLAOCC+tree.hel.soil$POPDEL+tree.hel.soil$POPGRA+tree.hel.soil$PRUSER+tree.hel.soil$QUEALB+tree.hel.soil$QUEBIC+tree.hel.soil$QUEPAL+tree.hel.soil$QUERUB+tree.hel.soil$SALNIG+tree.hel.soil$SASALB+tree.hel.soil$TILAME+tree.hel.soil$TOXVER+tree.hel.soil$ULMAME+tree.hel.soil$ULMRUB+tree.hel.soil$ULMSP+tree.hel.soil$VIBLEN)
+
+tree.sel=ordiR2step(hel.rda.fulsoil.none,scope=formula(hel.rda.fulsoil.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,c(168,173,179,166)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,193:194],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:268])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+# now run step 2, the selection part
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(rdadate1[,8:155]~rdadate1$Habitat)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+## Variance partitioning
+varpart(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(172,176)], tree.hel.all.pcnm[,c(234,254,246,233,241)])
+## Check to see if it's significant when PCNM and soil come first.
+hel.rda.all.partpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(172,176)], tree.hel.all.pcnm[,c(234,254,246,233,241)])
+anova(hel.rda.all.partpcnm)
+# Yes.
+hel.rda.all.partsoil=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(234,254,246,233,241)], tree.hel.all.pcnm[,c(172,176)])
+anova(hel.rda.all.partsoil)
 ````
 
 ```{r RDA DATE3}
-#RDA analysis
-dim(commdata)
-colnames(commdata)
-rdadate1=commdata[commdata$Date=="8.10.16",]
+## Remove fruitflies from the analyses
+rdadate3=commdata[commdata$Date=="8.10.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
+dim(rdadate3)
 
-tree.hel.soil=merge(rdadate1,soildata, by="Plot")
+#### All plots
+tree.hel.soil=rdadate3
 dim(tree.hel.soil)
 rownames(tree.hel.soil)=tree.hel.soil[,1]
 tree.hel.soil=na.exclude(tree.hel.soil)
 # Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
 colnames(tree.hel.soil)
-tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core",]
-#dim(tree.hel.soil)
+dim(tree.hel.soil)
 
-hel.rda.fulsoil = rda(tree.hel.soil[,8:158], tree.hel.soil[,168:192])
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
-# Here is the forward selection command and then constructing a model with selected variables.
-#hel.rda.for=forward.sel(tree.hel.soil[,10:42], tree.hel.soil[,52:76], adjR2thresh=global.thresh)
-#hel.rda.for
-#names(tree.hel.soil)
-#hel.rda.selsoil = rda(tree.hel.soil[,10:42] ~ as.matrix(tree.hel.soil[,c(52,54,56,57,58)]))
-#anova(hel.rda.selsoil)
-#RsquareAdj(hel.rda.selsoil)
-#plot(hel.rda.selsoil)
+
+##Forward selection
+hel.rda.fulsoil.none = rda(tree.hel.soil[,8:155]~1)
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
+
+hel.rda.fulsoil.full=rda(tree.hel.soil[,8:155]~tree.hel.soil$Ptot_long+tree.hel.soil$Po_long+tree.hel.soil$pH_long+tree.hel.soil$moist_long+tree.hel.soil$ps1_long+tree.hel.soil$ps2_long+tree.hel.soil$percc_long+tree.hel.soil$cton_long+tree.hel.soil$Ptot_nug+tree.hel.soil$Po_nug+tree.hel.soil$pH_nug+tree.hel.soil$moist_nug+tree.hel.soil$ps1_nug+tree.hel.soil$ps2_nug+tree.hel.soil$percc_nug+tree.hel.soil$pomc_nug+tree.hel.soil$cton_nug+tree.hel.soil$Ptot_short+tree.hel.soil$Po_short+tree.hel.soil$pH_short+tree.hel.soil$moist_short+tree.hel.soil$ps1_short+tree.hel.soil$percc_short+tree.hel.soil$pomc_short+tree.hel.soil$cton_short)
+
+tree.sel=ordiR2step(hel.rda.fulsoil.none,scope=formula(hel.rda.fulsoil.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,c(165,178,180,175)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 
 ###INVERT BY TREE DATA
-colnames(tree.ringsum1)
-dim(rdadate1)
-inverttrees=merge(rdadate1,tree.ringsum)
-dim(inverttrees)
-rownames(inverttrees)=inverttrees[,1]
-invert.colsums=apply(inverttrees[,8:158],2,sum)
-
-invert.hel=cbind(inverttrees$Plot,inverttrees[,which(invert.colsums!=0)])
-invert.hel=decostand(invert.hel, method="hellinger")
-dim(invert.hel)
-colnames(invert.hel)
-
-tree.rowsums=apply(tree.ringsum3,1,sum)
-tree.hel=tree.ringsum
-tree.hel[,10:42]=tree.hel[,10:42]/tree.rowsums
-tree.hel[,10:42]=sqrt(tree.hel[,10:42])
-
-invert.hel=invert.hel[invert.hel$TerrType!="S",]
-tree.hel=tree.hel[tree.hel$Plot!="I3/4",]
-tree.hel=tree.hel[tree.hel$Plot!="N7",]
-
-
-tree.hel.soil=cbind(tree.hel,invert.hel[,6:77])
-dim(tree.hel.soil)
-rownames(tree.hel.soil)=tree.hel.soil[,1]
-tree.hel.soil=na.exclude(tree.hel.soil)
-# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
-colnames(tree.hel.soil)
-tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core",]
-dim(tree.hel.soil)
-
-hel.rda.fulsoil = rda(tree.hel.soil[,46:112],tree.hel.soil[,c(8,9,13,14,18,09,22,27,28,30,31,33,34,37)])
+dim(rdadate3)
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155],tree.hel.soil[,c(195:229)])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -803,125 +955,194 @@ global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 #to determine spatial autocorrelation
 # First we perform PCNM to get the vectors
 colnames(tree.hel.soil)
-all.geog.dist=vegdist(tree.hel.soil[,8:9],method="euclid")
+all.geog.dist=vegdist(tree.hel.soil[,193:194],method="euclid")
 all.pcnm1=pcnm(all.geog.dist)
 all.pcnmvecs=all.pcnm1$vectors
 # If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
 #tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
 tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
-#tree.hel.all.pcnm=tree.hel.all.pcnm[tree.hel.all.pcnm$EP=="Core",]
+names(tree.hel.all.pcnm)
 # Now run step 1, global analysis
-hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,46:112], tree.hel.all.pcnm[,113:139])
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:274])
 anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
-# NON significant - don't run step 2. To find step 2, see Blackwood et al code from Monographs paper
+# now run step 2, the selection part
+
+#forward selection for our PCNM variables
+hel.rda.all.pcnm.none=rda(tree.hel.all.pcnm[,8:155]~1)
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:274])
+
+hel.rda.all.pcnm.full=rda(tree.hel.all.pcnm[,8:155]~tree.hel.all.pcnm$PCNM1+tree.hel.all.pcnm$PCNM2+tree.hel.all.pcnm$PCNM3+tree.hel.all.pcnm$PCNM4+tree.hel.all.pcnm$PCNM5+tree.hel.all.pcnm$PCNM6+tree.hel.all.pcnm$PCNM7+tree.hel.all.pcnm$PCNM8+tree.hel.all.pcnm$PCNM9+tree.hel.all.pcnm$PCNM10+tree.hel.all.pcnm$PCNM11+tree.hel.all.pcnm$PCNM12+tree.hel.all.pcnm$PCNM13+tree.hel.all.pcnm$PCNM14+tree.hel.all.pcnm$PCNM15+tree.hel.all.pcnm$PCNM16+tree.hel.all.pcnm$PCNM17+tree.hel.all.pcnm$PCNM18+tree.hel.all.pcnm$PCNM19+tree.hel.all.pcnm$PCNM20+tree.hel.all.pcnm$PCNM21+tree.hel.all.pcnm$PCNM22+tree.hel.all.pcnm$PCNM23+tree.hel.all.pcnm$PCNM24+tree.hel.all.pcnm$PCNM25+tree.hel.all.pcnm$PCNM26+tree.hel.all.pcnm$PCNM27+tree.hel.all.pcnm$PCNM28+tree.hel.all.pcnm$PCNM29+tree.hel.all.pcnm$PCNM30+tree.hel.all.pcnm$PCNM31+tree.hel.all.pcnm$PCNM32+tree.hel.all.pcnm$PCNM33+tree.hel.all.pcnm$PCNM34+tree.hel.all.pcnm$PCNM35+tree.hel.all.pcnm$PCNM36+tree.hel.all.pcnm$PCNM37+tree.hel.all.pcnm$PCNM38+tree.hel.all.pcnm$PCNM39+tree.hel.all.pcnm$PCNM40+tree.hel.all.pcnm$PCNM41+tree.hel.all.pcnm$PCNM42+tree.hel.all.pcnm$PCNM43+tree.hel.all.pcnm$PCNM44)
+
+tree.sel=ordiR2step(hel.rda.all.pcnm.none,scope=formula(hel.rda.all.pcnm.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(267:268,231:232,236,239)])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## Variance partitioning
+varpart(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(165,178,180,175)], tree.hel.all.pcnm[,c(267:268,231:232,236,239)])
+## Check to see if it's significant when PCNM and soil come first.
+hel.rda.all.partpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(165,178,180,175)], tree.hel.all.pcnm[,c(267:268,231:232,236,239)])
+anova(hel.rda.all.partpcnm)
+# Yes.
+hel.rda.all.partsoil=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(267:268,231:232,236,239)], tree.hel.all.pcnm[,c(165,178,180,175)])
+anova(hel.rda.all.partsoil)
 
 
 ##INVERTS BY ECOSYSTEM
-#RDA analysis
-rdadate1=commdata[commdata$Date=="8.10.16",]
-rdadate1=commdata[commdata$Date=="8.10.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
-inverttrees=merge(rdadate1,tree.ringsum3)
-dim(inverttrees)
-invert.colsums=apply(inverttrees[,8:158],2,sum)
-invert.hel=cbind(inverttrees$Plot,inverttrees$EP,inverttrees$Habitat,inverttrees[,which(invert.colsums!=0)])
-dim(invert.hel)
-invert.hel=decostand(invert.hel, method="hellinger")
-rownames(invert.hel)=invert.hel[,1]
-
-#Just the CORE Plots
-invert.helcore=invert.hel[invert.hel[,2]=="Core",]
-hel.rda.fulsoil = rda(invert.helcore[,5:80]~invert.helcore[,3])
+hel.rda.fulsoil = rda(rdadate1[,8:155]~rdadate1$Habitat)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
-#Everything BUT the Transition
-invert.heledge=invert.hel[invert.hel[,2]!="Trans",]
-dim(invert.heledge)
-hel.rda.fulsoil = rda(invert.heledge[,5:80]~invert.heledge[,3])
+#### Core plots ####
+tree.hel.soil=rdadate3[rdadate3$EP=="Core",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+dim(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+dim(rdadate3)
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155],tree.hel.soil[,c(195:229)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,193:194],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:255])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+#forward selection for our PCNM variables
+hel.rda.all.pcnm.none=rda(tree.hel.all.pcnm[,8:155]~1)
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:255])
+
+hel.rda.all.pcnm.full=rda(tree.hel.all.pcnm[,8:155]~tree.hel.all.pcnm$PCNM1+tree.hel.all.pcnm$PCNM2+tree.hel.all.pcnm$PCNM3+tree.hel.all.pcnm$PCNM4+tree.hel.all.pcnm$PCNM5+tree.hel.all.pcnm$PCNM6+tree.hel.all.pcnm$PCNM7+tree.hel.all.pcnm$PCNM8+tree.hel.all.pcnm$PCNM9+tree.hel.all.pcnm$PCNM10+tree.hel.all.pcnm$PCNM11+tree.hel.all.pcnm$PCNM12+tree.hel.all.pcnm$PCNM13+tree.hel.all.pcnm$PCNM14+tree.hel.all.pcnm$PCNM15+tree.hel.all.pcnm$PCNM16+tree.hel.all.pcnm$PCNM17+tree.hel.all.pcnm$PCNM18+tree.hel.all.pcnm$PCNM19+tree.hel.all.pcnm$PCNM20+tree.hel.all.pcnm$PCNM21+tree.hel.all.pcnm$PCNM22+tree.hel.all.pcnm$PCNM23+tree.hel.all.pcnm$PCNM24+tree.hel.all.pcnm$PCNM25)
+
+tree.sel=ordiR2step(hel.rda.all.pcnm.none,scope=formula(hel.rda.all.pcnm.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(231:235,245,248:250,253)])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155]~tree.hel.soil$Habitat)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 
+#### CORE+EDGE ####
+tree.hel.soil=rdadate3[rdadate3$EP=="Core"|rdadate3$EP=="Edge",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
 
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155],tree.hel.soil[,c(195:229)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,193:194],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:268])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+# now run step 2, the selection part
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(rdadate1[,8:155]~rdadate1$Habitat)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 ````
-MARGINAL SIGNIFICANCE: Date 3, core plots only. Inverts~Tree. (0.097)
 
 ```{r RDA DATE4}
-#RDA analysis
-dim(commdata)
-colnames(commdata)
-rdadate1=commdata[commdata$Date=="10.15.16",]
+## Remove fruitflies from the analyses
+rdadate4=commdata[commdata$Date=="10.15.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
+dim(rdadate4)
 
-tree.hel.soil=merge(rdadate1,soildata, by="Plot")
+#### All plots
+tree.hel.soil=rdadate4
 dim(tree.hel.soil)
 rownames(tree.hel.soil)=tree.hel.soil[,1]
 tree.hel.soil=na.exclude(tree.hel.soil)
 # Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
 colnames(tree.hel.soil)
-tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core",]
-#dim(tree.hel.soil)
+dim(tree.hel.soil)
 
-hel.rda.fulsoil = rda(tree.hel.soil[,8:158], tree.hel.soil[,168:192])
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
-# Here is the forward selection command and then constructing a model with selected variables.
-#hel.rda.for=forward.sel(tree.hel.soil[,10:42], tree.hel.soil[,52:76], adjR2thresh=global.thresh)
-#hel.rda.for
-#names(tree.hel.soil)
-#hel.rda.selsoil = rda(tree.hel.soil[,10:42] ~ as.matrix(tree.hel.soil[,c(52,54,56,57,58)]))
-#anova(hel.rda.selsoil)
-#RsquareAdj(hel.rda.selsoil)
-#plot(hel.rda.selsoil)
+
+##Forward selection
+hel.rda.fulsoil.none = rda(tree.hel.soil[,8:155]~1)
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
+
+hel.rda.fulsoil.full=rda(tree.hel.soil[,8:155]~tree.hel.soil$Ptot_long+tree.hel.soil$Po_long+tree.hel.soil$pH_long+tree.hel.soil$moist_long+tree.hel.soil$ps1_long+tree.hel.soil$ps2_long+tree.hel.soil$percc_long+tree.hel.soil$cton_long+tree.hel.soil$Ptot_nug+tree.hel.soil$Po_nug+tree.hel.soil$pH_nug+tree.hel.soil$moist_nug+tree.hel.soil$ps1_nug+tree.hel.soil$ps2_nug+tree.hel.soil$percc_nug+tree.hel.soil$pomc_nug+tree.hel.soil$cton_nug+tree.hel.soil$Ptot_short+tree.hel.soil$Po_short+tree.hel.soil$pH_short+tree.hel.soil$moist_short+tree.hel.soil$ps1_short+tree.hel.soil$percc_short+tree.hel.soil$pomc_short+tree.hel.soil$cton_short)
+
+tree.sel=ordiR2step(hel.rda.fulsoil.none,scope=formula(hel.rda.fulsoil.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,c(169,172,173,182,174)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 
 ###INVERT BY TREE DATA
-colnames(tree.ringsum1)
-dim(rdadate1)
-inverttrees=merge(rdadate1,tree.ringsum)
-dim(inverttrees)
-rownames(inverttrees)=inverttrees[,1]
-invert.colsums=apply(inverttrees[,8:158],2,sum)
-
-invert.hel=cbind(inverttrees$Plot,inverttrees[,which(invert.colsums!=0)])
-invert.hel=decostand(invert.hel, method="hellinger")
-rownames(invert.hel)=invert.hel[,1]
-dim(invert.hel)
-colnames(invert.hel)
-
-tree.rowsums=apply(tree.ringsum3,1,sum)
-tree.hel=tree.ringsum
-tree.hel[,10:42]=tree.hel[,10:42]/tree.rowsums
-tree.hel[,10:42]=sqrt(tree.hel[,10:42])
-
-invert.hel=invert.hel[invert.hel$TerrType!="S",]
-tree.hel=tree.hel[tree.hel$Plot!="19",]
-tree.hel=tree.hel[tree.hel$Plot!="B1/2",]
-tree.hel=tree.hel[tree.hel$Plot!="I3/4",]
-tree.hel=tree.hel[tree.hel$Plot!="M1",]
-tree.hel=tree.hel[tree.hel$Plot!="N7",]
-tree.hel=tree.hel[tree.hel$Plot!="P1/2",]
-tree.hel=tree.hel[tree.hel$Plot!="P3/4",]
-tree.hel=tree.hel[tree.hel$Plot!="S2",]
-tree.hel=tree.hel[tree.hel$Plot!="Q1/2",]
-tree.hel=tree.hel[tree.hel$Plot!="Q3/4",]
-tree.hel=tree.hel[tree.hel$Plot!="Q5/6",]
-
-
-tree.hel.soil=cbind(tree.hel,invert.hel[,6:69])
-dim(tree.hel.soil)
-rownames(tree.hel.soil)=tree.hel.soil[,1]
-tree.hel.soil=na.exclude(tree.hel.soil)
-# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
-colnames(tree.hel.soil)
-#tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core",]
-dim(tree.hel.soil)
-
-hel.rda.fulsoil = rda(tree.hel.soil[,46:109],tree.hel.soil[,c(8,9,13,14,18,09,22,27,28,30,31,33,34,37)])
+dim(rdadate4)
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155],tree.hel.soil[,c(195:229)])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -930,100 +1151,126 @@ global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 #to determine spatial autocorrelation
 # First we perform PCNM to get the vectors
 colnames(tree.hel.soil)
-all.geog.dist=vegdist(tree.hel.soil[,8:9],method="euclid")
+all.geog.dist=vegdist(tree.hel.soil[,193:194],method="euclid")
 all.pcnm1=pcnm(all.geog.dist)
 all.pcnmvecs=all.pcnm1$vectors
 # If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
 #tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
 tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
-#tree.hel.all.pcnm=tree.hel.all.pcnm[tree.hel.all.pcnm$EP=="Core",]
+names(tree.hel.all.pcnm)
 # Now run step 1, global analysis
-colnames(tree.hel.all.pcnm)
-hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,46:109], tree.hel.all.pcnm[,110:151])
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:271])
 anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
-# NON significant - don't run step 2. To find step 2, see Blackwood et al code from Monographs paper
+# now run step 2, the selection part
 
 ##INVERTS BY ECOSYSTEM
-#RDA analysis
-rdadate1=commdata[commdata$Date=="10.15.16",]
-rdadate1=commdata[commdata$Date=="10.15.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
-inverttrees=merge(rdadate1,tree.ringsum3)
-dim(inverttrees)
-invert.colsums=apply(inverttrees[,8:158],2,sum)
-invert.hel=cbind(inverttrees$Plot,inverttrees$EP,inverttrees$Habitat,inverttrees[,which(invert.colsums!=0)])
-dim(invert.hel)
-invert.hel=decostand(invert.hel, method="hellinger")
-rownames(invert.hel)=invert.hel[,1]
-
-#Just the CORE Plots
-invert.helcore=invert.hel[invert.hel[,2]=="Core",]
-hel.rda.fulsoil = rda(invert.helcore[,7:72]~invert.helcore[,3])
+hel.rda.fulsoil = rda(rdadate1[,8:155]~rdadate1$Habitat)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
-#Everything BUT the Transition
-invert.heledge=invert.hel[invert.hel[,2]!="Trans",]
-dim(invert.heledge)
-hel.rda.fulsoil = rda(invert.heledge[7:72]~invert.heledge[,3])
+#### Core plots ####
+tree.hel.soil=rdadate4[rdadate4$EP=="Core",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+dim(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
-###ALL plots in an RDA
-metatest=merge(commdata,soildata,by="Plot")
-metatest=na.exclude(metatest)
-hel.rda.fulsoil = rda(metatest[,8:158], metatest[,168:192])
+###INVERT BY TREE DATA
+dim(rdadate4)
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155],tree.hel.soil[,c(195:229)])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
-# Here is the forward selection command and then constructing a model with selected variables.
-hel.rda.for=forward.sel(metatest[,8:158], metatest[,52:76], adjR2thresh=global.thresh)
-#hel.rda.for
 
-#Forward selection using Ordistep
-invert.rda.full=rda(metatest[,8:158]~metatest$Ptot_long+metatest$Po_long+metatest$pH_long+metatest$moist_long +metatest$ps1_long+metatest$ps2_long+metatest$percc_long+metatest$cton_long+metatest$Ptot_nug+metatest$Po_nug+metatest$pH_nug+metatest$moist_nug+metatest$ps1_nug+metatest$ps2_nug+metatest$percc_nug+metatest$pomc_nug+metatest$cton_nug+metatest$Ptot_short+metatest$Po_short+metatest$pH_short+metatest$moist_short+metatest$ps1_short+metatest$percc_short+metatest$pomc_short+metatest$cton_short)
-invert.rda.none=rda(metatest[,8:158]~1)
-invert.sel=ordiR2step(invert.rda.none,scope=formula(invert.rda.full),Pin=0.05,R2scope=TRUE)
-invert.sel
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,193:194],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:255])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155]~tree.hel.soil$Habitat)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+#### CORE+EDGE ####
+tree.hel.soil=rdadate4[rdadate4$EP=="Core"|rdadate4$EP=="Edge",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Forward selection
+hel.rda.fulsoil.none = rda(tree.hel.soil[,8:155]~1)
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,165:189])
+
+hel.rda.fulsoil.full=rda(tree.hel.soil[,8:155]~tree.hel.soil$Ptot_long+tree.hel.soil$Po_long+tree.hel.soil$pH_long+tree.hel.soil$moist_long+tree.hel.soil$ps1_long+tree.hel.soil$ps2_long+tree.hel.soil$percc_long+tree.hel.soil$cton_long+tree.hel.soil$Ptot_nug+tree.hel.soil$Po_nug+tree.hel.soil$pH_nug+tree.hel.soil$moist_nug+tree.hel.soil$ps1_nug+tree.hel.soil$ps2_nug+tree.hel.soil$percc_nug+tree.hel.soil$pomc_nug+tree.hel.soil$cton_nug+tree.hel.soil$Ptot_short+tree.hel.soil$Po_short+tree.hel.soil$pH_short+tree.hel.soil$moist_short+tree.hel.soil$ps1_short+tree.hel.soil$percc_short+tree.hel.soil$pomc_short+tree.hel.soil$cton_short)
+
+tree.sel=ordiR2step(hel.rda.fulsoil.none,scope=formula(hel.rda.fulsoil.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,c(169,172,173)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155],tree.hel.soil[,c(195:229)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,193:194],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,231:266])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+# now run step 2, the selection part
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(rdadate1[,8:155]~rdadate1$Habitat)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 ````
-
-
-ALL PLOTS on commdata$Habitat
-Date 1 (10.6.15):   p=0.81
-Date 2 (5.5.16):    p=0.645
-Date 3 (8.10.16):   p=0.321
-Date 4 (10.16.15):  p=0.036* Adj R2=0.26
-
-ONLy CORE PLOTS plots by habitat
-Date 1 (10.6.15):   p=0.008*
-Date 2 (5.5.16):    p=0.191
-Date 3 (8.10.16):   p=0.435
-Date 4 (10.16.15):  p=0.001* Adj R2=0.18
-
-ALL PLOTS to soil variables:
-Date 1 (10.6.15):   p=0.305
-Date 2 (5.5.16):    p=0.943
-Date 3 (8.10.16):   p=0.402
-Date 4 (10.16.15):  p=0.115
-
-CORE PLOTS ONLY to soil variables:
-Date 1 (10.6.15):   p=0.294
-Date 2 (5.5.16):    p=0.406
-Date 3 (8.10.16):   p=0.58
-Date 4 (10.16.15):  p=0.413
-
-ALL PLOTS Over 1% of trees
-Date 1 (10.6.15):   p=0.001*  ADJ R2: 0.974
-Date 2 (5.5.16):    p=0.012*  ADJ R2: 0.112
-Date 3 (8.10.16):   p=0.01*   ADJ R2: 0.056
-Date 4 (10.16.15):  p=0.001*  ADJ R2: 0.332
-
-CORE PLOTS ONLY
-Date 1 (10.6.15):   p=0.001*  ADJ R2: 0.994
-Date 2 (5.5.16):    p=0.001*  ADJ R2: 0.322
-Date 3 (8.10.16):   p=0.328   ADJ R2: -0.001
-Date 4 (10.16.15):  p=0.001*  ADJ R2: 0.481
