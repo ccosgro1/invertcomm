@@ -76,7 +76,7 @@ for(i in 1:83) {
 	tree.ringsum1=treedata[i,10:42] }
 rownames(tree.ringsum)=tree.ringsum[,1]
 
-tree.rowsums=apply(tree.ringsum,1,sum)
+tree.rowsums=apply(tree.ringsum[10:42],1,sum)
 tree.hel=tree.ringsum
 tree.hel[,10:42]=tree.hel[,10:42]/tree.rowsums
 tree.hel[,10:42]=sqrt(tree.hel[,10:42])
@@ -153,7 +153,7 @@ Hdate1=diversity(date1[1:89,8:158])
 raredate1=rarefy(date1[,8:158], 2)-1
 specno=specnumber(commdata[8:158], MARGIN=1)
 
-botrich=lme(specno~asfactor(commdata$TerrType)*commdata$Date+commdata$Plot)
+botrich=lme(specno~as.factor(TerrType)*Date+Plot,random=~1, data=commdata)
 summary(botrich)
 TukeyHSD(botrich)
 shapiro.test(specscno)
@@ -284,12 +284,12 @@ hu1=diversity(u1[8:158], index="shannon")
 hu2=diversity(u2[8:158], index="shannon")
 hu3=diversity(u3[8:158], index="shannon")
 hu4=diversity(u4[8:158], index="shannon")
-boxplot(hu1, hu2, hu3, hu4, xlab="upland diversity", ylab="shannons diversity")
+boxplot(Hupl,hu1, hu2, hu3, hu4, xlab="upland diversity", ylab="shannons diversity")
 mtext(side=1,at=1,"All Dates",las=2,line=1, srt=45)
-mtext(side=1,at=1,"6 Oct 2015",las=2,line=1, srt=45)
-mtext(side=1,at=2,"5 May 2016",las=2,line=1)
-mtext(side=1,at=3,"10 Aug 2016",las=2,line=1)
-mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
+mtext(side=1,at=2,"6 Oct 2015",las=2,line=1, srt=45)
+mtext(side=1,at=3,"5 May 2016",las=2,line=1)
+mtext(side=1,at=4,"10 Aug 2016",las=2,line=1)
+mtext(side=1,at=5,"15 Oct 2016",las=2,line=1)
 
 
 sru1=specnumber(u1[8:158], MARGIN=1)
@@ -479,6 +479,7 @@ anova(alldates1)
 sralldates1=specnumber(commdata.edge[8:158], MARGIN=1)
 datesall1=lme(sralldates1~Habitat*Date, random=~1|Plot, data=commdata.edge)
 anova(datesall1)
+summary(datesall1)
 
 commdata.edge$Habitat
 colnames(commdata)
@@ -487,9 +488,7 @@ commdata$Habitat
 
 colnames(commdata)=commdata[1,]
 lme(Hdate1~Habitat+Plot, data=date1)
-
-
-````
+```
 
 
 ```{r RDA DATE1}
@@ -700,7 +699,6 @@ anova(hel.rda.all.partpcnm)
 hel.rda.all.partsoil=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(234,254,246,233,241)], tree.hel.all.pcnm[,c(172,176)])
 anova(hel.rda.all.partsoil)
 ````
-
 ```{r RDA DATE2}
 ## Remove fruitflies from the analyses
 rdadate2=commdata[commdata$Date=="5.5.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
@@ -828,7 +826,7 @@ global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 
 #### CORE+EDGE ####
-tree.hel.soil=rdadate2[rdadate$EP=="Core"|rdadate1$EP=="Edge",]
+tree.hel.soil=rdadate2[rdadate2$EP=="Core"|rdadate2$EP=="Edge",]
 dim(tree.hel.soil)
 rownames(tree.hel.soil)=tree.hel.soil[,1]
 tree.hel.soil=na.exclude(tree.hel.soil)
@@ -870,7 +868,7 @@ tree.sel=ordiR2step(hel.rda.fulsoil.none,scope=formula(hel.rda.fulsoil.full),Pin
 tree.sel
 
 ##Just the variables forward selected
-hel.rda.fulsoil = rda(tree.hel.soil[,8:155], tree.hel.soil[,c(168,173,179,166)])
+hel.rda.fulsoil = rda(tree.hel.soil[,8:155]~1)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -900,15 +898,14 @@ RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 ## Variance partitioning
-varpart(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(172,176)], tree.hel.all.pcnm[,c(234,254,246,233,241)])
+varpart(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(168,173,179,166)], tree.hel.all.pcnm[,c(195:229)])
 ## Check to see if it's significant when PCNM and soil come first.
-hel.rda.all.partpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(172,176)], tree.hel.all.pcnm[,c(234,254,246,233,241)])
+hel.rda.all.partpcnm=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(168,173,179,166)], tree.hel.all.pcnm[,c(195:229)])
 anova(hel.rda.all.partpcnm)
 # Yes.
-hel.rda.all.partsoil=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(234,254,246,233,241)], tree.hel.all.pcnm[,c(172,176)])
+hel.rda.all.partsoil=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(195:229)], tree.hel.all.pcnm[,c(168,173,179,166)])
 anova(hel.rda.all.partsoil)
 ````
-
 ```{r RDA DATE3}
 ## Remove fruitflies from the analyses
 rdadate3=commdata[commdata$Date=="8.10.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
@@ -1104,7 +1101,6 @@ anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 ````
-
 ```{r RDA DATE4}
 ## Remove fruitflies from the analyses
 rdadate4=commdata[commdata$Date=="10.15.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
