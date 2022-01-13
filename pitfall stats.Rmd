@@ -694,17 +694,17 @@ plot(alpha4)
 
 
 #Gamma
-gammadiv=with(date1, tapply(specnumber(date1[,5:205]),TerrType.x.x))
+gammadiv=with(date1, tapply(specnumber(date1[,5:205]),TerrType.x))
 plot(gammadiv)
-gamma2=with(date2, tapply(specnumber(date2[,5:205]),TerrType.x.x))
-gamma3=with(date3, tapply(specnumber(date3[,5:205]),TerrType.x.x))
-gamma4=with(date4, tapply(specnumber(date4[,5:205]),TerrType.x.x))
+gamma2=with(date2, tapply(specnumber(date2[,5:205]),TerrType.x))
+gamma3=with(date3, tapply(specnumber(date3[,5:205]),TerrType.x))
+gamma4=with(date4, tapply(specnumber(date4[,5:205]),TerrType.x))
 plot(gammadiv,gamma2,gamma3,gamma4)
 #Beta
-alpha1 <- with(date1, tapply(specnumber(date1[,5:205]), TerrType.x.x, mean))
-alpha2 <- with(date2, tapply(specnumber(date2[,5:205]), TerrType.x.x, mean))
-alpha3 <- with(date3, tapply(specnumber(date3[,5:205]), TerrType.x.x, mean))
-alpha4 <- with(date4, tapply(specnumber(date4[,5:205]), TerrType.x.x, mean))
+alpha1 <- with(date1, tapply(specnumber(date1[,5:205]), TerrType.x, mean))
+alpha2 <- with(date2, tapply(specnumber(date2[,5:205]), TerrType.x, mean))
+alpha3 <- with(date3, tapply(specnumber(date3[,5:205]), TerrType.x, mean))
+alpha4 <- with(date4, tapply(specnumber(date4[,5:205]), TerrType.x, mean))
 beta1=gammadiv/alpha1-1
 beta2=gamma2/alpha2-1
 beta3=gamma3/alpha3-1
@@ -867,10 +867,10 @@ mtext(side=1,at=3,"24 May 2016",las=2,line=1)
 mtext(side=1,at=4,"28 July 2018",las=2,line=1)
 mtext(side=1,at=5,"15 Oct 2016",las=2,line=1)
 
-ubr1=specnumber(u1[5:205], MARGIN=1)
-ubr2=specnumber(u2[5:205], MARGIN=1)
-ubr3=specnumber(u3[5:205], MARGIN=1)
-ubr4=specnumber(u4[5:205], MARGIN=1)
+ubr1=specnumber(ub1[5:205], MARGIN=1)
+ubr2=specnumber(ub2[5:205], MARGIN=1)
+ubr3=specnumber(ub3[5:205], MARGIN=1)
+ubr4=specnumber(ub4[5:205], MARGIN=1)
 boxplot(ubr1,ubr2,ubr3,ubr4, xlab="UB spp richness", ylab="species richness", ylim=c(0,40))
 mtext(side=1,at=1,"26 Sept 2015",las=2,line=1, srt=45)
 mtext(side=1,at=2,"24 May 2016",las=2,line=1)
@@ -879,6 +879,7 @@ mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
 
 #ripbot
 ripbot=pitfall[pitfall$TerrType.x=="RB"|pitfall$TerrType.x=="BR",]
+dim(ripbot)
 rb1=ripbot[ripbot$Date=="9.26.15",]
 rb2=ripbot[ripbot$Date=="5.24.16",]
 rb3=ripbot[ripbot$Date=="7.28.16",]
@@ -896,10 +897,10 @@ mtext(side=1,at=3,"24 May 2016",las=2,line=1)
 mtext(side=1,at=4,"28 July 2018",las=2,line=1)
 mtext(side=1,at=5,"15 Oct 2016",las=2,line=1)
 
-rbr1=specnumber(u1[5:205], MARGIN=1)
-rbr2=specnumber(u2[5:205], MARGIN=1)
-rbr3=specnumber(u3[5:205], MARGIN=1)
-rbr4=specnumber(u4[5:205], MARGIN=1)
+rbr1=specnumber(rb1[5:205], MARGIN=1)
+rbr2=specnumber(rb2[5:205], MARGIN=1)
+rbr3=specnumber(rb3[5:205], MARGIN=1)
+rbr4=specnumber(rb4[5:205], MARGIN=1)
 boxplot(rbr1,rbr2,rbr3,rbr4, xlab="RB spp richness", ylab="species richness", ylim=c(0,40))
 mtext(side=1,at=1,"26 Sept 2015",las=2,line=1, srt=45)
 mtext(side=1,at=2,"24 May 2016",las=2,line=1)
@@ -908,6 +909,7 @@ mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
 
 #uplrip
 uplrip=pitfall[pitfall$TerrType.x=="UR"|pitfall$TerrType.x=="RU",]
+dim(uplrip)
 ur1=uplrip[uplrip$Date=="9.26.15",]
 ur2=uplrip[uplrip$Date=="5.24.16",]
 ur3=uplrip[uplrip$Date=="7.28.16",]
@@ -926,10 +928,10 @@ mtext(side=1,at=4,"28 July 2018",las=2,line=1)
 mtext(side=1,at=5,"15 Oct 2016",las=2,line=1)
 
 
-urr1=specnumber(u1[5:205], MARGIN=1)
-urr2=specnumber(u2[5:205], MARGIN=1)
-urr3=specnumber(u3[5:205], MARGIN=1)
-urr4=specnumber(u4[5:205], MARGIN=1)
+urr1=specnumber(ur1[5:205], MARGIN=1)
+urr2=specnumber(ur2[5:205], MARGIN=1)
+urr3=specnumber(ur3[5:205], MARGIN=1)
+urr4=specnumber(ur4[5:205], MARGIN=1)
 srripupl=boxplot(urr1, urr2, urr3, urr4, xlab="ur spp richness", ylab="species richness", ylim=c(0,40))
 mtext(side=1,at=1,"26 Sept 2015",las=2,line=1, srt=45)
 mtext(side=1,at=2,"24 May 2016",las=2,line=1)
@@ -983,31 +985,31 @@ mtext(side=1,at=4,"15 Oct 2016",las=0,line=1)
 pitfall.core=pitfall[pitfall$EP.x=="Core",]
 dim(pitfall.core)
 halldates=diversity(pitfall.core[,5:205], index="shannon")
-alldates=lme(halldates~TerrType.x.x*Date, random = ~ 1|Plot, data=pitfall.core)
+alldates=lme(halldates~TerrType.x*Date, random = ~ 1|Plot, data=pitfall.core)
 anova(alldates)
 
 sralldates=specnumber(pitfall.core[5:205], MARGIN=1)
-datesall=lme(sralldates~TerrType.x.x*Date, random=~1|Plot, data=pitfall.core)
+datesall=lme(sralldates~TerrType.x*Date, random=~1|Plot, data=pitfall.core)
 anova(datesall)
 
 pitfall.edge=pitfall[pitfall$EP.x!="Trans",]
-pitfall.edge=pitfall.edge[pitfall.edge$TerrType.x.x!="UR",]
+pitfall.edge=pitfall.edge[pitfall.edge$TerrType.x!="UR",]
 dim(pitfall.edge)
 
 halldates1=diversity(pitfall.edge[5:205], index="shannon")
-alldates1=lme(halldates1~TerrType.x.x*Date, random = ~ 1|Plot, data=pitfall.edge)
+alldates1=lme(halldates1~TerrType.x*Date, random = ~ 1|Plot, data=pitfall.edge)
 anova(alldates1)
 
 sralldates1=specnumber(pitfall.edge[5:205], MARGIN=1)
-datesall1=lme(sralldates1~TerrType.x.x*Date, random=~1|Plot, data=pitfall.edge)
+datesall1=lme(sralldates1~TerrType.x*Date, random=~1|Plot, data=pitfall.edge)
 anova(datesall1)
 summary(datesall1)
 
-pitfall.edge$TerrType.x.x
+pitfall.edge$TerrType.x
 colnames(pitfall)
-pitfall$TerrType.x.x
+pitfall$TerrType.x
 
 
 colnames(pitfall)=pitfall[1,]
-lme(Hdate1~TerrType.x.x+Plot, data=date1)
+lme(Hdate1~TerrType.x+Plot, data=date1)
 ```
