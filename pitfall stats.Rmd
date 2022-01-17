@@ -1013,3 +1013,26 @@ pitfall$TerrType.x
 colnames(pitfall)=pitfall[1,]
 lme(Hdate1~TerrType.x+Plot, data=date1)
 ```
+
+```{r CCA}
+## Date 1
+pit.cca.d1=cca(date1[,5:205]~date1$TerrType.x)
+anova(pit.cca.d1)
+plot(pit.cca.d1)
+
+## Date 2
+pit.cca.d2=cca(date2[,5:205]~date2$TerrType.x)
+anova(pit.cca.d2)
+plot(pit.cca.d2)
+
+## Date 3
+pit.cca.d3=cca(date3[,5:205]~date3$TerrType.x)
+anova(pit.cca.d3)
+plot(pit.cca.d3)
+scores(pit.cca.d3)
+
+## Date 4
+pit.cca.d4=cca(date4[,5:205]~date4$TerrType.x)
+anova(pit.cca.d4)
+plot(pit.cca.d4)
+```

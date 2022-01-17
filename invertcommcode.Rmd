@@ -698,7 +698,7 @@ anova(hel.rda.all.partpcnm)
 # Yes.
 hel.rda.all.partsoil=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(234,254,246,233,241)], tree.hel.all.pcnm[,c(172,176)])
 anova(hel.rda.all.partsoil)
-````
+```
 ```{r RDA DATE2}
 ## Remove fruitflies from the analyses
 rdadate2=commdata[commdata$Date=="5.5.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
@@ -905,7 +905,7 @@ anova(hel.rda.all.partpcnm)
 # Yes.
 hel.rda.all.partsoil=rda(tree.hel.all.pcnm[,8:155], tree.hel.all.pcnm[,c(195:229)], tree.hel.all.pcnm[,c(168,173,179,166)])
 anova(hel.rda.all.partsoil)
-````
+```
 ```{r RDA DATE3}
 ## Remove fruitflies from the analyses
 rdadate3=commdata[commdata$Date=="8.10.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
@@ -1100,7 +1100,7 @@ hel.rda.fulsoil = rda(rdadate1[,8:155]~rdadate1$Habitat)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
-````
+```
 ```{r RDA DATE4}
 ## Remove fruitflies from the analyses
 rdadate4=commdata[commdata$Date=="10.15.16",which(colnames(commdata)!="Drosophilidae..Drosophila"&colnames(commdata)!="Drosophilidae..Microdrosophila"&colnames(commdata)!="Drosophilidae..Mycodrosophila")]
@@ -1269,4 +1269,26 @@ hel.rda.fulsoil = rda(rdadate1[,8:155]~rdadate1$Habitat)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
-````
+```
+
+```{r CCA}
+## Date 1
+fly.cca.d1=cca(date1[,8:155]~date1$TerrType)
+anova(fly.cca.d1)
+plot(fly.cca.d1)
+
+## Date 2
+fly.cca.d2=cca(date2[,8:155]~date2$TerrType)
+anova(fly.cca.d2)
+plot(fly.cca.d2)
+
+## Date 3
+fly.cca.d3=cca(date3[,8:155]~date3$TerrType)
+anova(fly.cca.d3)
+plot(fly.cca.d3)
+
+## Date 4
+fly.cca.d4=cca(date4[,8:155]~date4$TerrType)
+anova(fly.cca.d4)
+plot(fly.cca.d4)
+```
