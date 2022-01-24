@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r load data}
 pitfall=read.csv("C:/Users/crc31/dropbox/Jennings Invertebrates/Cosgrove pitfall inverts_comb.csv", header=T)
 dim(pitfall)
-soildat=read.csv("C:/Users/crc31/OneDrive/Documents/School/Research/Data/Trees/soil_data.csv")
+soildat=read.csv("C:/Users/crc31/OneDrive/Documents/School/Grad School/SpatialStats/soil data May 08 for tree plots.csv")
 treedata=read.csv("C:/Users/crc31/Dropbox/Jennings 2016/New Adult Basal Area.csv")
 #fiddle with the tree data
 treedata[is.na(treedata)] <- 0
@@ -54,6 +54,7 @@ date4=pitfall[pitfall$Sample.pd=="Date 4",]
 library(vegan)
 ```
 
+Decoupling Stats - Community-wide
 ```{r RDA Date 1}
 #remove NAs.
 date1=na.omit(date1)
@@ -88,7 +89,7 @@ global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 ## Variance partitioning not needed because no significance.
 
 ##INVERTS BY ECOSYSTEM
-hel.rda.fulsoil = rda(date1[,5:205]~date1$TerrType.x)
+hel.rda.fulsoil = rda(date1[,5:205]~date1$TerrType)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -142,7 +143,7 @@ global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 ## no variance partitioning needed because no significance/soil effect.
 
 ##INVERTS BY ECOSYSTEM
-hel.rda.fulsoil = rda(date1[,5:205]~date1$TerrType.x)
+hel.rda.fulsoil = rda(date1[,5:205]~date1$TerrType)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -195,7 +196,7 @@ global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 ## Variance partitioning - Not needed because there's no pcnm effect
 
 ##INVERTS BY ECOSYSTEM
-hel.rda.fulsoil = rda(date1[,5:205]~date1$TerrType.x)
+hel.rda.fulsoil = rda(date1[,5:205]~date1$TerrType)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -234,7 +235,7 @@ global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 #### Will do variance partitioning after I figure out what I'm doing with the tree data b/c it's combined plots and not half plots.####
 
 ##INVERTS BY ECOSYSTEM
-hel.rda.fulsoil = rda(date2[,5:205]~date2$TerrType.x)
+hel.rda.fulsoil = rda(date2[,5:205]~date2$TerrType)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -310,7 +311,7 @@ anova(hel.rda.all.partsoil)
 # Yes.
 
 ##INVERTS BY ECOSYSTEM
-hel.rda.fulsoil = rda(date2[,5:205]~date2$TerrType.x)
+hel.rda.fulsoil = rda(date2[,5:205]~date2$TerrType)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -364,7 +365,7 @@ global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 ## Variance partitioning - Not needed becausse no soil/pcnm effects.
 
 ##INVERTS BY ECOSYSTEM
-hel.rda.fulsoil = rda(date2[,5:205]~date2$TerrType.x)
+hel.rda.fulsoil = rda(date2[,5:205]~date2$TerrType)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -443,7 +444,7 @@ anova(hel.rda.all.partsoil)
 # Yes.
 
 ##INVERTS BY ECOSYSTEM
-hel.rda.fulsoil = rda(date3[,5:205]~date3$TerrType.x)
+hel.rda.fulsoil = rda(date3[,5:205]~date3$TerrType)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -497,7 +498,7 @@ global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 ## Variance partitioning not needed because there's no pcnm effect.
 
 ##INVERTS BY ECOSYSTEM
-hel.rda.fulsoil = rda(date3[,5:205]~date3$TerrType.x)
+hel.rda.fulsoil = rda(date3[,5:205]~date3$TerrType)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -550,7 +551,7 @@ global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 ## Variance partitioning not needed because no pcnm effect.
 
 ##INVERTS BY ECOSYSTEM
-hel.rda.fulsoil = rda(date3[,5:205]~date3$TerrType.x)
+hel.rda.fulsoil = rda(date3[,5:205]~date3$TerrType)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -589,7 +590,7 @@ global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 ## No variance partitioning because no soil/pcnm effect
 
 ##INVERTS BY ECOSYSTEM
-hel.rda.fulsoil = rda(date4[,5:205]~date4$TerrType.x)
+hel.rda.fulsoil = rda(date4[,5:205]~date4$TerrType)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -626,7 +627,7 @@ global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 ## No variance partitioning because no soil/pcnm effects
 
 ##INVERTS BY ECOSYSTEM
-hel.rda.fulsoil = rda(date4[,5:205]~date4$TerrType.x)
+hel.rda.fulsoil = rda(date4[,5:205]~date4$TerrType)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -663,11 +664,181 @@ global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 ## No variance partitioning because no soil/pcnm effects.
 
 ##INVERTS BY ECOSYSTEM
-hel.rda.fulsoil = rda(date4[,5:205]~date4$TerrType.x)
+hel.rda.fulsoil = rda(date4[,5:205]~date4$TerrType)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 ```
+
+Decoupling Stats - Order-wide.
+```{r Date 1}
+#### Aranaea ####
+aranaea.d1=date1[,c(1:4,5:25,206:298)]
+#remove NAs.
+aranaea.d1=na.omit(aranaea.d1)
+#save a back-up for later, just in case.
+aranaea.d1.2=aranaea.d1
+##rda by soil
+hel.rda.fulsoil = rda(aranaea.d1[,7:25], aranaea.d1[,49:73])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(aranaea.d1[,7:25],aranaea.d1[,c(83:117)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+## Forward Selection
+hel.rda.fulsoil.none = rda(aranaea.d1[,7:25]~1)
+hel.rda.fulsoil = rda(aranaea.d1[,7:25], aranaea.d1[,83:117])
+
+hel.rda.fulsoil.full=rda(aranaea.d1[,7:25]~aranaea.d1$ACERUB+aranaea.d1$ACESAC+aranaea.d1$ACESIL+aranaea.d1$BETALL+aranaea.d1$CARCAR+aranaea.d1$CARCOR+aranaea.d1$CAROVA+aranaea.d1$CARTOM+aranaea.d1$CORFLO+aranaea.d1$CRAPUN+aranaea.d1$FAGAME+aranaea.d1$FRAAME+aranaea.d1$FRANIG+aranaea.d1$HAMVIR+aranaea.d1$LIRTUP+aranaea.d1$MAGACU+aranaea.d1$MALCOR+aranaea.d1$NYSSYL+aranaea.d1$OSTVIR+aranaea.d1$PLAOCC+aranaea.d1$OSTVIR+aranaea.d1$PLAOCC+aranaea.d1$POPDEL+aranaea.d1$POPGRA+aranaea.d1$PRUSER+aranaea.d1$QUEALB+aranaea.d1$QUEBIC+aranaea.d1$QUEPAL+aranaea.d1$QUERUB+aranaea.d1$SALNIG+aranaea.d1$SASALB+aranaea.d1$TILAME+aranaea.d1$TOXVER+aranaea.d1$ULMAME+aranaea.d1$ULMRUB+aranaea.d1$ULMSP+aranaea.d1$VIBLEN)
+
+tree.sel=ordiR2step(hel.rda.fulsoil.none,scope=formula(hel.rda.fulsoil.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+hel.rda.fulsoil = rda(aranaea.d1[,7:25], aranaea.d1[,c(239,248)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(aranaea.d1)
+all.geog.dist=vegdist(aranaea.d1[,31:32],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(aranaea.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(aranaea.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,7:25], tree.hel.all.pcnm[,119:134])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## Forward Selection
+hel.rda.fulsoil.none = rda(tree.hel.all.pcnm[,7:25]~1)
+.hel.rda.fulsoil = rda(tree.hel.all.pcnm[,7:25], tree.hel.all.pcnm[,119:134])
+
+hel.rda.fulsoil.full=rda(tree.hel.all.pcnm[,7:25]~tree.hel.all.pcnm$PCNM1+tree.hel.all.pcnm$PCNM2+tree.hel.all.pcnm$PCNM3+tree.hel.all.pcnm$PCNM4+tree.hel.all.pcnm$PCNM5+tree.hel.all.pcnm$PCNM6+tree.hel.all.pcnm$PCNM7+tree.hel.all.pcnm$PCNM8+tree.hel.all.pcnm$PCNM9+tree.hel.all.pcnm$PCNM10+tree.hel.all.pcnm$PCNM11+tree.hel.all.pcnm$PCNM12+tree.hel.all.pcnm$PCNM13+tree.hel.all.pcnm$PCNM14+tree.hel.all.pcnm$PCNM15+tree.hel.all.pcnm$PCNM16)
+
+tree.sel=ordiR2step(hel.rda.fulsoil.none,scope=formula(hel.rda.fulsoil.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+#hel.rda.fulsoil = rda(tree.hel.all.pcnm[,7:25], tree.hel.all.pcnm[,c(239,248)])
+#anova(hel.rda.fulsoil)
+#RsquareAdj(hel.rda.fulsoil)
+#global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(aranaea.d1[,7:25]~aranaea.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+aranaea.d1=aranaea.d1.2[aranaea.d1.2$EP.x=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(aranaea.d1[,7:25], aranaea.d1[,49:73])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(aranaea.d1[,7:25],aranaea.d1[,c(83:117)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(aranaea.d1)
+all.geog.dist=vegdist(aranaea.d1[,31:32],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(aranaea.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(aranaea.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,7:25], tree.hel.all.pcnm[,119:126])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(aranaea.d1[,7:25]~aranaea.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+aranaea.d1=aranaea.d1.2[aranaea.d1.2$EP.x!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(aranaea.d1[,7:25], aranaea.d1[,49:73])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(aranaea.d1[,7:25],aranaea.d1[,c(83:117)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(aranaea.d1)
+all.geog.dist=vegdist(aranaea.d1[,31:32],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(aranaea.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(aranaea.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,7:25], tree.hel.all.pcnm[,119:134])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(aranaea.d1[,7:25]~aranaea.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Coleoptera ####
+
+#### Clitellata ####
+
+#### Chilopoda ####
+
+#### Diplopoda ####
+
+#### Diptera ####
+
+#### Gastropoda ####
+
+#### Hemiptera ####
+
+#### Hymenoptera ####
+
+#### Isopoda ####
+
+#### Orthoptera ####
+
+#### Colembola ####
+```
+
+
 
 ```{r Diversity}
 #Gamma diversity between ecosystems
@@ -677,7 +848,7 @@ Hdate1=diversity(date1[1:89,5:205])
 raredate1=rarefy(date1[,5:205], 2)-1
 specno=specnumber(date1[5:205], MARGIN=1)
 
-botrich=lme(specno~as.factor(TerrType.x)*Date+Plot,random=~1, data=pitfall)
+botrich=lme(specno~as.factor(TerrType)*Date+Plot,random=~1, data=pitfall)
 summary(botrich)
 TukeyHSD(botrich)
 shapiro.test(specscno)
@@ -694,17 +865,17 @@ plot(alpha4)
 
 
 #Gamma
-gammadiv=with(date1, tapply(specnumber(date1[,5:205]),TerrType.x))
+gammadiv=with(date1, tapply(specnumber(date1[,5:205]),TerrType))
 plot(gammadiv)
-gamma2=with(date2, tapply(specnumber(date2[,5:205]),TerrType.x))
-gamma3=with(date3, tapply(specnumber(date3[,5:205]),TerrType.x))
-gamma4=with(date4, tapply(specnumber(date4[,5:205]),TerrType.x))
+gamma2=with(date2, tapply(specnumber(date2[,5:205]),TerrType))
+gamma3=with(date3, tapply(specnumber(date3[,5:205]),TerrType))
+gamma4=with(date4, tapply(specnumber(date4[,5:205]),TerrType))
 plot(gammadiv,gamma2,gamma3,gamma4)
 #Beta
-alpha1 <- with(date1, tapply(specnumber(date1[,5:205]), TerrType.x, mean))
-alpha2 <- with(date2, tapply(specnumber(date2[,5:205]), TerrType.x, mean))
-alpha3 <- with(date3, tapply(specnumber(date3[,5:205]), TerrType.x, mean))
-alpha4 <- with(date4, tapply(specnumber(date4[,5:205]), TerrType.x, mean))
+alpha1 <- with(date1, tapply(specnumber(date1[,5:205]), TerrType, mean))
+alpha2 <- with(date2, tapply(specnumber(date2[,5:205]), TerrType, mean))
+alpha3 <- with(date3, tapply(specnumber(date3[,5:205]), TerrType, mean))
+alpha4 <- with(date4, tapply(specnumber(date4[,5:205]), TerrType, mean))
 beta1=gammadiv/alpha1-1
 beta2=gamma2/alpha2-1
 beta3=gamma3/alpha3-1
@@ -736,7 +907,7 @@ mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
 
 
 #shannon's diversity by ecosystem type
-bot=pitfall[pitfall$TerrType.x=="B",]
+bot=pitfall[pitfall$TerrType=="B",]
 rownames(bot)=bot[,1]
 b1=bot[bot$Date=="9.26.15",]
 b2=bot[bot$Date=="5.24.16",]
@@ -767,7 +938,7 @@ mtext(side=1,at=3,"28 July 2016",las=2,line=1)
 mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
 
 
-rip=pitfall[pitfall$TerrType.x=="R",]
+rip=pitfall[pitfall$TerrType=="R",]
 r1=rip[rip$Date=="9.26.15",]
 r2=rip[rip$Date=="5.24.16",]
 r3=rip[rip$Date=="7.28.16",]
@@ -796,7 +967,7 @@ mtext(side=1,at=3,"28 July 2018",las=2,line=1)
 mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
 
 
-upl=pitfall[pitfall$TerrType.x=="U",]
+upl=pitfall[pitfall$TerrType=="U",]
 u1=upl[upl$Date=="9.26.15",]
 u2=upl[upl$Date=="5.24.16",]
 u3=upl[upl$Date=="7.28.16",]
@@ -825,7 +996,7 @@ mtext(side=1,at=3,"28 July 2018",las=2,line=1)
 mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
 
 
-dis=pitfall[pitfall$TerrType.x=="D",]
+dis=pitfall[pitfall$TerrType=="D",]
 rownames(dis)=dis[,1]
 Hdis=diversity(dis[5:205], index="shannon")
 
@@ -848,7 +1019,7 @@ summary(halp)
 
 ##Ecotone Diversity and Richness
 #uplbot
-uplbot=pitfall[pitfall$TerrType.x=="UB"|pitfall$TerrType.x=="BU",]
+uplbot=pitfall[pitfall$TerrType=="UB"|pitfall$TerrType=="BU",]
 dim(uplbot)
 ub1=uplbot[uplbot$Date=="9.26.15",]
 ub2=uplbot[uplbot$Date=="5.24.16",]
@@ -878,7 +1049,7 @@ mtext(side=1,at=3,"28 July 2018",las=2,line=1)
 mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
 
 #ripbot
-ripbot=pitfall[pitfall$TerrType.x=="RB"|pitfall$TerrType.x=="BR",]
+ripbot=pitfall[pitfall$TerrType=="RB"|pitfall$TerrType=="BR",]
 dim(ripbot)
 rb1=ripbot[ripbot$Date=="9.26.15",]
 rb2=ripbot[ripbot$Date=="5.24.16",]
@@ -908,7 +1079,7 @@ mtext(side=1,at=3,"28 July 2018",las=2,line=1)
 mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
 
 #uplrip
-uplrip=pitfall[pitfall$TerrType.x=="UR"|pitfall$TerrType.x=="RU",]
+uplrip=pitfall[pitfall$TerrType=="UR"|pitfall$TerrType=="RU",]
 dim(uplrip)
 ur1=uplrip[uplrip$Date=="9.26.15",]
 ur2=uplrip[uplrip$Date=="5.24.16",]
@@ -985,54 +1156,97 @@ mtext(side=1,at=4,"15 Oct 2016",las=0,line=1)
 pitfall.core=pitfall[pitfall$EP.x=="Core",]
 dim(pitfall.core)
 halldates=diversity(pitfall.core[,5:205], index="shannon")
-alldates=lme(halldates~TerrType.x*Date, random = ~ 1|Plot, data=pitfall.core)
+alldates=lme(halldates~TerrType*Date, random = ~ 1|Plot, data=pitfall.core)
 anova(alldates)
 
 sralldates=specnumber(pitfall.core[5:205], MARGIN=1)
-datesall=lme(sralldates~TerrType.x*Date, random=~1|Plot, data=pitfall.core)
+datesall=lme(sralldates~TerrType*Date, random=~1|Plot, data=pitfall.core)
 anova(datesall)
 
 pitfall.edge=pitfall[pitfall$EP.x!="Trans",]
-pitfall.edge=pitfall.edge[pitfall.edge$TerrType.x!="UR",]
+pitfall.edge=pitfall.edge[pitfall.edge$TerrType!="UR",]
 dim(pitfall.edge)
 
 halldates1=diversity(pitfall.edge[5:205], index="shannon")
-alldates1=lme(halldates1~TerrType.x*Date, random = ~ 1|Plot, data=pitfall.edge)
+alldates1=lme(halldates1~TerrType*Date, random = ~ 1|Plot, data=pitfall.edge)
 anova(alldates1)
 
 sralldates1=specnumber(pitfall.edge[5:205], MARGIN=1)
-datesall1=lme(sralldates1~TerrType.x*Date, random=~1|Plot, data=pitfall.edge)
+datesall1=lme(sralldates1~TerrType*Date, random=~1|Plot, data=pitfall.edge)
 anova(datesall1)
 summary(datesall1)
 
-pitfall.edge$TerrType.x
+pitfall.edge$TerrType
 colnames(pitfall)
-pitfall$TerrType.x
+pitfall$TerrType
 
 
 colnames(pitfall)=pitfall[1,]
-lme(Hdate1~TerrType.x+Plot, data=date1)
+lme(Hdate1~TerrType+Plot, data=date1)
 ```
 
-```{r CCA}
+```{r CCA; H1}
 ## Date 1
-pit.cca.d1=cca(date1[,5:205]~date1$TerrType.x)
+##Let's take out the TerrTypes that we don't test (like things that include D and thus don't have replicates)
+date1.cca=date1[date1$TerrType=="B"|date1$TerrType=="RU"|date1$TerrType=="U"|date1$TerrType=="BU"|date1$TerrType=="UR"|date1$TerrType=="T-UR"|date1$TerrType=="UB"|date1$TerrType=="T-UB"|date1$TerrType=="R"|date1$TerrType=="RB"|date1$TerrType=="BR"|date1$TerrType=="T-RB",]
+
+## the CCA
+pit.cca.d1=cca(date1.cca[,5:205]~date1.cca$TerrType)
 anova(pit.cca.d1)
 plot(pit.cca.d1)
 
 ## Date 2
-pit.cca.d2=cca(date2[,5:205]~date2$TerrType.x)
+date2.cca=date2[date2$TerrType=="B"|date2$TerrType=="RU"|date2$TerrType=="U"|date2$TerrType=="BU"|date2$TerrType=="UR"|date2$TerrType=="T-UR"|date2$TerrType=="UB"|date2$TerrType=="T-UB"|date2$TerrType=="R"|date2$TerrType=="RB"|date2$TerrType=="BR"|date2$TerrType=="T-RB",]
+
+pit.cca.d2=cca(date2.cca[,5:205]~date2.cca$TerrType)
 anova(pit.cca.d2)
 plot(pit.cca.d2)
 
 ## Date 3
-pit.cca.d3=cca(date3[,5:205]~date3$TerrType.x)
+date3.cca=date3[date3$TerrType=="B"|date3$TerrType=="RU"|date3$TerrType=="U"|date3$TerrType=="BU"|date3$TerrType=="UR"|date3$TerrType=="T-UR"|date3$TerrType=="UB"|date3$TerrType=="T-UB"|date3$TerrType=="R"|date3$TerrType=="RB"|date3$TerrType=="BR"|date3$TerrType=="T-RB",]
+pit.cca.d3=cca(date3.cca[,5:205]~date3.cca$TerrType)
 anova(pit.cca.d3)
 plot(pit.cca.d3)
 scores(pit.cca.d3)
 
 ## Date 4
-pit.cca.d4=cca(date4[,5:205]~date4$TerrType.x)
+date4.cca=date4[date4$TerrType=="B"|date4$TerrType=="RU"|date4$TerrType=="U"|date4$TerrType=="BU"|date4$TerrType=="UR"|date4$TerrType=="T-UR"|date4$TerrType=="UB"|date4$TerrType=="T-UB"|date4$TerrType=="R"|date4$TerrType=="RB"|date4$TerrType=="BR"|date4$TerrType=="T-RB",]
+pit.cca.d4=cca(date4.cca[,5:205]~date4.cca$TerrType)
 anova(pit.cca.d4)
 plot(pit.cca.d4)
+```
+```{r NMDS}
+##Subset the dataset to remove plots and columns we don't need.
+pitfall.data.nmds=pitfall[,1:212]
+pitfall.data.nmds=pitfall.data.nmds[pitfall.data.nmds$TerrType=="B"|pitfall.data.nmds$TerrType=="R"|pitfall.data.nmds$TerrType=="U"|pitfall.data.nmds$TerrType=="BU"|pitfall.data.nmds$TerrType=="UB"|pitfall.data.nmds$TerrType=="RU"|pitfall.data.nmds$TerrType=="UR"|pitfall.data.nmds$TerrType=="BR"|pitfall.data.nmds$TerrType=="RB",]
+pitfall.groups=c(pitfall$TerrType,pitfall[,5:205])
+
+## Set up distance matrix
+pitfall.rel.abun=decostand(pitfall.data.nmds[,5:205], method="total",labels=T)
+pitfall.distance=vegdist(pitfall.rel.abun, method="bray",labels=T)
+pitfall.dist.mat=as.matrix(pitfall.distance, labels= T)
+
+##NMDS
+pitfall.nmds=metaMDS(pitfall.dist.mat, 
+                     distance="bray", 
+                     k=3, 
+                     maxit=999, 
+                     trymax=500, 
+                     wascores=TRUE)
+goodness(pitfall.nmds)
+stressplot(pitfall.nmds)
+
+##Plot
+plot(pitfall.nmds, "sites")
+orditorp(pitfall.nmds, "sites")
+
+##Let's jazz up this plot a little bit.
+colvec<-c("gray0","red1","cornflowerblue","lightcyan3","tomato3","blueviolet")
+
+plot(pitfall.nmds)
+with(pitfall.groups,
+     points(pitfall.nmds,
+            display="sites",
+            col="black",
+            bg=colvec[TerrType]))
 ```
