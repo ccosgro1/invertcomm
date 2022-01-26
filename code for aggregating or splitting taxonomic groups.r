@@ -4,6 +4,7 @@
 # you will need to change the path for your computer, or import the data the way you like to
 #otu.tax=read.csv("invert_taxonomy_file.csv")
 otu.tax=read.csv("C:/Users/crc31/Dropbox/Jennings Invertebrates/flyingFFG.csv")
+otu.tax=read.csv("C:/Users/crc31/Dropbox/Jennings Invertebrates/pitfallFFG.csv")
 p=nrow(otu.tax)
 dim(otu.tax)
 names(otu.tax)
@@ -59,24 +60,33 @@ write.csv(data.agg,"invertcomm_genus.csv")
 # Let's select phylum Nematoda
 # So this example creates a dataset of Nematoda-only OTUs
 level=5
-i=7
 levels(as.factor(otu.tax[,level]))
 # Choose your group in the next line. Make sure spelling is perfect.  Don't choose "FALSE" because that is meaningless.
-spp.only=commdata[,8:158]
-group="woodfeeding"
+#spp.only=commdata[,8:158]
+spp.only=pitfall[,5:205]
+group="sap"
 data.nematoda=spp.only[,otu.tax[,level]==group]
 dim(data.nematoda)
 
 #data.nematoda=data.nematoda[c(1:18,22:38),]
 data.agg=data.nematoda
-data.agg=cbind(commdata[,1:7],data.agg)
+#data.agg=cbind(commdata[,1:7],data.agg)
+data.agg=cbind(pitfall[1:4],data.agg)
 data.agg
 
-
+## Flying invert dates
 date4.agg=data.agg[data.agg$Date=="10.15.16",]
 date2.agg=data.agg[data.agg$Date=="5.5.16",]
 date3.agg=data.agg[data.agg$Date=="8.10.16",]
 date1.agg=data.agg[data.agg$Date=="10.6.15",]
+
+## Ground-dwelling invert dates
+date4.agg=data.agg[data.agg$Date=="10.15.16",]
+date2.agg=data.agg[data.agg$Date=="5.24.16",]
+date3.agg=data.agg[data.agg$Date=="7.28.16",]
+date1.agg=data.agg[data.agg$Date=="9.26.15",]
+
+
 colsum1=colSums(date1[8:97])
 colsum2=colSums(date2[8:97])
 colsum3=colSums(date3[8:97])

@@ -1250,3 +1250,540 @@ with(pitfall.groups,
             col="black",
             bg=colvec[TerrType]))
 ```
+
+```{r Functional Feeding Groups DATE1}
+### USING THE CODE FOR SPLITTING TAXONOMIC GROUPS. data.agg will ONLY fit what we specify in the other code. NOTES CAN BE FOUND AT THE END OF THE CODE FOR EACH GROUP
+
+#### All plots
+tree.hel.soil=merge(date1.agg,soildata,by="Plot")
+tree.hel.soil=merge(tree.hel.soil, tree.hel, by="Plot")
+
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+dim(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9], tree.hel.soil[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9],tree.hel.soil[,c(52:86)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,50:51],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,88:129])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+# now run step 2, the selection part
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9]~tree.hel.soil$ecosys)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### CORE+EDGE ####
+tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core"|tree.hel.soil$EP=="Edge",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9], tree.hel.soil[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9],tree.hel.soil[,c(52:86)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,50:51],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,88:124])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9]~tree.hel.soil$ecosys)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Core plots ####
+tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+dim(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9], tree.hel.soil[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9],tree.hel.soil[,c(52:86)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,50:51],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,88:111])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+# now run step 2, the selection part
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9]~tree.hel.soil$ecosys)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+```
+```{r Functional Feeding Groups DATE2}
+### USING THE CODE FOR SPLITTING TAXONOMIC GROUPS. data.agg will ONLY fit what we specify in the other code. NOTES CAN BE FOUND AT THE END OF THE CODE FOR EACH GROUP
+
+#### All plots
+tree.hel.soil=merge(date2.agg,soildata,by="Plot")
+tree.hel.soil=merge(tree.hel.soil, tree.hel, by="Plot")
+
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+dim(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9], tree.hel.soil[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9],tree.hel.soil[,c(52:86)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,50:51],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,88:127])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+# now run step 2, the selection part
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9]~tree.hel.soil$ecosys)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### CORE+EDGE ####
+tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core"|tree.hel.soil$EP=="Edge",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9], tree.hel.soil[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9],tree.hel.soil[,c(52:86)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,50:51],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[88:123])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9]~tree.hel.soil$ecosys)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Core plots ####
+tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+dim(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9], tree.hel.soil[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9],tree.hel.soil[,c(52:86)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,50:51],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,88:111])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+# now run step 2, the selection part
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9]~tree.hel.soil$ecosys)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+```
+```{r Functional Feeding Groups DATE3}
+### USING THE CODE FOR SPLITTING TAXONOMIC GROUPS. data.agg will ONLY fit what we specify in the other code. NOTES CAN BE FOUND AT THE END OF THE CODE FOR EACH GROUP
+
+#### All plots
+tree.hel.soil=merge(date3.agg,soildata,by="Plot")
+tree.hel.soil=merge(tree.hel.soil, tree.hel, by="Plot")
+
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+dim(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9], tree.hel.soil[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9],tree.hel.soil[,c(52:86)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,50:51],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,88:131])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+# now run step 2, the selection part
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9]~tree.hel.soil$ecosys)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### CORE+EDGE ####
+tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core"|tree.hel.soil$EP=="Edge",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9], tree.hel.soil[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9],tree.hel.soil[,c(52:86)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,50:51],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,88:125])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9]~tree.hel.soil$ecosys)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Core plots ####
+tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+dim(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9], tree.hel.soil[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9],tree.hel.soil[,c(52:86)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,50:51],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,88:112])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+# now run step 2, the selection part
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9]~tree.hel.soil$ecosys)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+```
+```{r Functional Feeding Groups DATE4}
+### USING THE CODE FOR SPLITTING TAXONOMIC GROUPS. data.agg will ONLY fit what we specify in the other code. NOTES CAN BE FOUND AT THE END OF THE CODE FOR EACH GROUP
+
+#### All plots
+tree.hel.soil=merge(date4.agg,soildata,by="Plot")
+tree.hel.soil=merge(tree.hel.soil, tree.hel, by="Plot")
+
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+dim(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9], tree.hel.soil[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9],tree.hel.soil[,c(52:86)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,50:51],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,88:130])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+# now run step 2, the selection part
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9]~tree.hel.soil$ecosys)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### CORE+EDGE ####
+tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core"|tree.hel.soil$EP=="Edge",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9], tree.hel.soil[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9],tree.hel.soil[,c(52:86)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,50:51],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[88:125])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9]~tree.hel.soil$ecosys)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Core plots ####
+tree.hel.soil=tree.hel.soil[tree.hel.soil$EP=="Core",]
+dim(tree.hel.soil)
+rownames(tree.hel.soil)=tree.hel.soil[,1]
+tree.hel.soil=na.exclude(tree.hel.soil)
+# Here is the global analysis. Can proceed  Use adj. R square as additional stopping criterion.
+colnames(tree.hel.soil)
+dim(tree.hel.soil)
+
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9], tree.hel.soil[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERT BY TREE DATA
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9],tree.hel.soil[,c(52:86)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+###INVERTS BY PCMN
+#to determine spatial autocorrelation
+# First we perform PCNM to get the vectors
+colnames(tree.hel.soil)
+all.geog.dist=vegdist(tree.hel.soil[,50:51],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(tree.hel.soil,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,88:112])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+# now run step 2, the selection part
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(tree.hel.soil[,5:9]~tree.hel.soil$ecosys)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+```
