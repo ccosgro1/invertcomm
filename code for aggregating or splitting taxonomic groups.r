@@ -62,16 +62,16 @@ write.csv(data.agg,"invertcomm_genus.csv")
 level=5
 levels(as.factor(otu.tax[,level]))
 # Choose your group in the next line. Make sure spelling is perfect.  Don't choose "FALSE" because that is meaningless.
-#spp.only=commdata[,8:158]
-spp.only=pitfall[,5:205]
-group="sap"
+spp.only=commdata[,8:158]
+#spp.only=pitfall[,5:205]
+group="herbivorous"
 data.nematoda=spp.only[,otu.tax[,level]==group]
 dim(data.nematoda)
 
 #data.nematoda=data.nematoda[c(1:18,22:38),]
 data.agg=data.nematoda
-#data.agg=cbind(commdata[,1:7],data.agg)
-data.agg=cbind(pitfall[1:4],data.agg)
+data.agg=cbind(commdata[,1:7],data.agg)
+#data.agg=cbind(pitfall[1:4],data.agg)
 data.agg
 
 ## Flying invert dates
