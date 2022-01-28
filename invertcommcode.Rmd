@@ -1272,6 +1272,2754 @@ RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 ```
 
+Order-level decoupling (NEED TO DO: aranaea, coleoptera, diptera, hemiptera, hymenoptera, lepidoptera)
+```{r Date 1}
+#### Aranaea ####
+aranaea.d1=date1[,c(1:4,8:20,159:233)]
+#remove NAs.
+aranaea.d1=na.omit(aranaea.d1)
+#save a back-up for later, just in case.
+aranaea.d1.2=aranaea.d1
+##rda by soil
+colnames(aranaea.d1)
+hel.rda.fulsoil = rda(aranaea.d1[,5:17], aranaea.d1[,27:51])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(aranaea.d1[,5:17],aranaea.d1[,c(57:91)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(aranaea.d1)
+all.geog.dist=vegdist(aranaea.d1[,55:56],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(aranaea.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(aranaea.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:17], tree.hel.all.pcnm[,93:130])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(aranaea.d1[,5:17]~aranaea.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+aranaea.d1=aranaea.d1.2[aranaea.d1.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(aranaea.d1[,5:17], aranaea.d1[,27:51])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(aranaea.d1[,5:17],aranaea.d1[,57:91])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(aranaea.d1)
+all.geog.dist=vegdist(aranaea.d1[,55:56],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(aranaea.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(aranaea.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:17], tree.hel.all.pcnm[,93:124])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(aranaea.d1[,5:17]~aranaea.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+aranaea.d1=aranaea.d1.2[aranaea.d1.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(aranaea.d1[,5:17], aranaea.d1[,27:51])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(aranaea.d1[,5:17],aranaea.d1[,c(57:91)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(aranaea.d1)
+all.geog.dist=vegdist(aranaea.d1[,55:56],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(aranaea.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(aranaea.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:17], tree.hel.all.pcnm[,93:111])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(aranaea.d1[,5:17]~aranaea.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+#### Coleoptera ####
+coleoptera.d1=date1[,c(1:4,21:67,159:233)]
+#remove NAs.
+coleoptera.d1=na.omit(coleoptera.d1)
+#save a back-up for later, just in case.
+coleoptera.d1.2=coleoptera.d1
+##rda by soil
+colnames(coleoptera.d1)
+hel.rda.fulsoil = rda(coleoptera.d1[,5:51], coleoptera.d1[,61:85])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(coleoptera.d1[,5:51],coleoptera.d1[,c(91:125)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(coleoptera.d1)
+all.geog.dist=vegdist(coleoptera.d1[,89:90],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(coleoptera.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(coleoptera.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:51], tree.hel.all.pcnm[,127:164])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## Forward Selection
+hel.rda.fulsoil.none = rda(tree.hel.all.pcnm[,5:51]~1)
+.hel.rda.fulsoil = rda(tree.hel.all.pcnm[,5:51], tree.hel.all.pcnm[,119:134])
+
+hel.rda.fulsoil.full=rda(tree.hel.all.pcnm[,5:51]~tree.hel.all.pcnm$PCNM1+tree.hel.all.pcnm$PCNM2+tree.hel.all.pcnm$PCNM3+tree.hel.all.pcnm$PCNM4+tree.hel.all.pcnm$PCNM5+tree.hel.all.pcnm$PCNM6+tree.hel.all.pcnm$PCNM7+tree.hel.all.pcnm$PCNM8+tree.hel.all.pcnm$PCNM9+tree.hel.all.pcnm$PCNM10+tree.hel.all.pcnm$PCNM11+tree.hel.all.pcnm$PCNM12+tree.hel.all.pcnm$PCNM13+tree.hel.all.pcnm$PCNM14+tree.hel.all.pcnm$PCNM15+tree.hel.all.pcnm$PCNM16)
+
+tree.sel=ordiR2step(hel.rda.fulsoil.none,scope=formula(hel.rda.fulsoil.full),Pin=0.05,R2scope=TRUE)
+tree.sel
+
+##Just the variables forward selected
+#hel.rda.fulsoil = rda(tree.hel.all.pcnm[,5:51], tree.hel.all.pcnm[,c(239,248)])
+#anova(hel.rda.fulsoil)
+#RsquareAdj(hel.rda.fulsoil)
+#global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(coleoptera.d1[,5:51]~coleoptera.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+coleoptera.d1=coleoptera.d1.2[coleoptera.d1.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(coleoptera.d1[,5:51], coleoptera.d1[,61:85])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(coleoptera.d1[,5:51],coleoptera.d1[,91:125])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(coleoptera.d1)
+all.geog.dist=vegdist(coleoptera.d1[,89:90],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(coleoptera.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(coleoptera.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:51], tree.hel.all.pcnm[,127:158])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(coleoptera.d1[,5:51]~coleoptera.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+coleoptera.d1=coleoptera.d1.2[coleoptera.d1.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(coleoptera.d1[,5:51], coleoptera.d1[,61:85])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(coleoptera.d1[,5:51],coleoptera.d1[,c(91:125)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(coleoptera.d1)
+all.geog.dist=vegdist(coleoptera.d1[,89:90],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(coleoptera.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(coleoptera.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:51], tree.hel.all.pcnm[,127:145])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(coleoptera.d1[,5:51]~coleoptera.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Diptera ####
+diptera.d1=date1[,c(1:4,70:107,159:233)]
+#remove NAs.
+diptera.d1=na.omit(diptera.d1)
+#save a back-up for later, just in case.
+diptera.d1.2=diptera.d1
+##rda by soil
+colnames(diptera.d1)
+hel.rda.fulsoil = rda(diptera.d1[,5:42], diptera.d1[,52:76])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(diptera.d1[,5:42],diptera.d1[,c(82:116)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(diptera.d1)
+all.geog.dist=vegdist(diptera.d1[,80:81],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(diptera.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(diptera.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:42], tree.hel.all.pcnm[,118:155])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(diptera.d1[,5:42]~diptera.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+diptera.d1=diptera.d1.2[diptera.d1.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(diptera.d1[,5:42], diptera.d1[,52:76])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(diptera.d1[,5:42],diptera.d1[,82:116])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(diptera.d1)
+all.geog.dist=vegdist(diptera.d1[,80:81],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(diptera.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(diptera.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:42], tree.hel.all.pcnm[,118:149])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(diptera.d1[,5:42]~diptera.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+diptera.d1=diptera.d1.2[diptera.d1.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(diptera.d1[,5:42], diptera.d1[,52:76])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(diptera.d1[,5:42],diptera.d1[,c(82:116)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(diptera.d1)
+all.geog.dist=vegdist(diptera.d1[,80:81],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(diptera.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(diptera.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:42], tree.hel.all.pcnm[,118:136])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(diptera.d1[,5:42]~diptera.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+#### Hemiptera ####
+hemiptera.d1=date1[,c(1:4,109:117,159:233)]
+#remove NAs.
+hemiptera.d1=na.omit(hemiptera.d1)
+#save a back-up for later, just in case.
+hemiptera.d1.2=hemiptera.d1
+##rda by soil
+colnames(hemiptera.d1)
+hel.rda.fulsoil = rda(hemiptera.d1[,5:13], hemiptera.d1[,23:47])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hemiptera.d1[,5:13],hemiptera.d1[,c(53:87)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hemiptera.d1)
+all.geog.dist=vegdist(hemiptera.d1[,51:52],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hemiptera.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hemiptera.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:13], tree.hel.all.pcnm[,89:126])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hemiptera.d1[,5:13]~hemiptera.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+hemiptera.d1=hemiptera.d1.2[hemiptera.d1.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(hemiptera.d1[,5:13], hemiptera.d1[,23:47])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hemiptera.d1[,5:13],hemiptera.d1[,53:87])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hemiptera.d1)
+all.geog.dist=vegdist(hemiptera.d1[,51:52],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hemiptera.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hemiptera.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:13], tree.hel.all.pcnm[,89:120])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hemiptera.d1[,5:13]~hemiptera.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+hemiptera.d1=hemiptera.d1.2[hemiptera.d1.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(hemiptera.d1[,5:13], hemiptera.d1[,23:47])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hemiptera.d1[,5:13],hemiptera.d1[,c(53:87)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hemiptera.d1)
+all.geog.dist=vegdist(hemiptera.d1[,51:52],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hemiptera.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hemiptera.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:13], tree.hel.all.pcnm[89:107])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hemiptera.d1[,5:13]~hemiptera.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Hymenoptera ####
+hymenoptera.d1=date1[,c(1:4,118:144,159:233)]
+#remove NAs.
+hymenoptera.d1=na.omit(hymenoptera.d1)
+#save a back-up for later, just in case.
+hymenoptera.d1.2=hymenoptera.d1
+##rda by soil
+colnames(hymenoptera.d1)
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:31], hymenoptera.d1[,41:65])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:31],hymenoptera.d1[,c(71:105)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hymenoptera.d1)
+all.geog.dist=vegdist(hymenoptera.d1[,69:70],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hymenoptera.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hymenoptera.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:31], tree.hel.all.pcnm[,107:144])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:31]~hymenoptera.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+hymenoptera.d1=hymenoptera.d1.2[hymenoptera.d1.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:31], hymenoptera.d1[,41:65])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:31],hymenoptera.d1[,71:105])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hymenoptera.d1)
+all.geog.dist=vegdist(hymenoptera.d1[,69:70],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hymenoptera.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hymenoptera.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:31], tree.hel.all.pcnm[,107:138])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:31]~hymenoptera.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+hymenoptera.d1=hymenoptera.d1.2[hymenoptera.d1.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:31], hymenoptera.d1[,41:65])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:31],hymenoptera.d1[,c(71:105)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hymenoptera.d1)
+all.geog.dist=vegdist(hymenoptera.d1[,69:70],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hymenoptera.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hymenoptera.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:31], tree.hel.all.pcnm[,107:125])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:31]~hymenoptera.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Lepidoptera ####
+lepidoptera.d1=date1[,c(1:4,145:149,159:233)]
+#remove NAs.
+lepidoptera.d1=na.omit(lepidoptera.d1)
+#save a back-up for later, just in case.
+lepidoptera.d1.2=lepidoptera.d1
+##rda by soil
+colnames(lepidoptera.d1)
+hel.rda.fulsoil = rda(lepidoptera.d1[,5:9], lepidoptera.d1[,19:43])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(lepidoptera.d1[,5:9],lepidoptera.d1[,c(49:83)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(lepidoptera.d1)
+all.geog.dist=vegdist(lepidoptera.d1[,47:48],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(lepidoptera.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(lepidoptera.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,85:122])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(lepidoptera.d1[,5:9]~lepidoptera.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+lepidoptera.d1=lepidoptera.d1.2[lepidoptera.d1.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(lepidoptera.d1[,5:9], lepidoptera.d1[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(lepidoptera.d1[,5:9],lepidoptera.d1[,49:83])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(lepidoptera.d1)
+all.geog.dist=vegdist(lepidoptera.d1[,47:48],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(lepidoptera.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(lepidoptera.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,85:116])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(lepidoptera.d1[,5:9]~lepidoptera.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+lepidoptera.d1=lepidoptera.d1.2[lepidoptera.d1.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(lepidoptera.d1[,5:9], lepidoptera.d1[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(lepidoptera.d1[,5:9],lepidoptera.d1[,c(49:83)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(lepidoptera.d1)
+all.geog.dist=vegdist(lepidoptera.d1[,47:48],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(lepidoptera.d1,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(lepidoptera.d1,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,85:103])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(lepidoptera.d1[,5:9]~lepidoptera.d1$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+```
+```{r Date 2}
+#### Aranaea ####
+aranaea.d2=date2[,c(1:4,8:20,159:233)]
+#remove NAs.
+aranaea.d2=na.omit(aranaea.d2)
+#save a back-up for later, just in case.
+aranaea.d2.2=aranaea.d2
+##rda by soil
+colnames(aranaea.d2)
+hel.rda.fulsoil = rda(aranaea.d2[,5:17], aranaea.d2[,27:51])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(aranaea.d2[,5:17],aranaea.d2[,c(57:91)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(aranaea.d2)
+all.geog.dist=vegdist(aranaea.d2[,55:56],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(aranaea.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(aranaea.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:17], tree.hel.all.pcnm[,93:130])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(aranaea.d2[,5:17]~aranaea.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+aranaea.d2=aranaea.d2.2[aranaea.d2.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(aranaea.d2[,5:17], aranaea.d2[,27:51])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(aranaea.d2[,5:17],aranaea.d2[,57:91])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(aranaea.d2)
+all.geog.dist=vegdist(aranaea.d2[,55:56],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(aranaea.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(aranaea.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:17], tree.hel.all.pcnm[,93:124])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(aranaea.d2[,5:17]~aranaea.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+aranaea.d2=aranaea.d2.2[aranaea.d2.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(aranaea.d2[,5:17], aranaea.d2[,27:51])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(aranaea.d2[,5:17],aranaea.d2[,c(57:91)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(aranaea.d2)
+all.geog.dist=vegdist(aranaea.d2[,55:56],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(aranaea.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(aranaea.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:17], tree.hel.all.pcnm[,93:111])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(aranaea.d2[,5:17]~aranaea.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+#### Coleoptera ####
+coleoptera.d2=date2[,c(1:4,21:67,159:233)]
+#remove NAs.
+coleoptera.d2=na.omit(coleoptera.d2)
+#save a back-up for later, just in case.
+coleoptera.d2.2=coleoptera.d2
+##rda by soil
+colnames(coleoptera.d2)
+hel.rda.fulsoil = rda(coleoptera.d2[,5:51], coleoptera.d2[,61:85])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(coleoptera.d2[,5:51],coleoptera.d2[,c(91:125)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(coleoptera.d2)
+all.geog.dist=vegdist(coleoptera.d2[,89:90],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(coleoptera.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(coleoptera.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:51], tree.hel.all.pcnm[,127:164])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(coleoptera.d2[,5:51]~coleoptera.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+coleoptera.d2=coleoptera.d2.2[coleoptera.d2.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(coleoptera.d2[,5:51], coleoptera.d2[,61:85])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(coleoptera.d2[,5:51],coleoptera.d2[,91:125])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(coleoptera.d2)
+all.geog.dist=vegdist(coleoptera.d2[,89:90],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(coleoptera.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(coleoptera.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:51], tree.hel.all.pcnm[,127:158])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(coleoptera.d2[,5:51]~coleoptera.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+coleoptera.d2=coleoptera.d2.2[coleoptera.d2.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(coleoptera.d2[,5:51], coleoptera.d2[,61:85])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(coleoptera.d2[,5:51],coleoptera.d2[,c(91:125)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(coleoptera.d2)
+all.geog.dist=vegdist(coleoptera.d2[,89:90],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(coleoptera.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(coleoptera.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:51], tree.hel.all.pcnm[,127:145])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(coleoptera.d2[,5:51]~coleoptera.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Diptera ####
+diptera.d2=date2[,c(1:4,70:107,159:233)]
+#remove NAs.
+diptera.d2=na.omit(diptera.d2)
+#save a back-up for later, just in case.
+diptera.d2.2=diptera.d2
+##rda by soil
+colnames(diptera.d2)
+hel.rda.fulsoil = rda(diptera.d2[,5:42], diptera.d2[,52:76])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(diptera.d2[,5:42],diptera.d2[,c(82:116)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(diptera.d2)
+all.geog.dist=vegdist(diptera.d2[,80:81],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(diptera.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(diptera.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:42], tree.hel.all.pcnm[,118:155])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(diptera.d2[,5:42]~diptera.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+diptera.d2=diptera.d2.2[diptera.d2.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(diptera.d2[,5:42], diptera.d2[,52:76])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(diptera.d2[,5:42],diptera.d2[,82:116])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(diptera.d2)
+all.geog.dist=vegdist(diptera.d2[,80:81],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(diptera.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(diptera.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:42], tree.hel.all.pcnm[,118:149])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(diptera.d2[,5:42]~diptera.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+diptera.d2=diptera.d2.2[diptera.d2.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(diptera.d2[,5:42], diptera.d2[,52:76])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(diptera.d2[,5:42],diptera.d2[,c(82:116)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(diptera.d2)
+all.geog.dist=vegdist(diptera.d2[,80:81],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(diptera.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(diptera.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:42], tree.hel.all.pcnm[,118:136])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(diptera.d2[,5:42]~diptera.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+#### Hemiptera ####
+hemiptera.d2=date2[,c(1:4,109:117,159:233)]
+#remove NAs.
+hemiptera.d2=na.omit(hemiptera.d2)
+#save a back-up for later, just in case.
+hemiptera.d2.2=hemiptera.d2
+##rda by soil
+colnames(hemiptera.d2)
+hel.rda.fulsoil = rda(hemiptera.d2[,5:13], hemiptera.d2[,23:47])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hemiptera.d2[,5:13],hemiptera.d2[,c(53:87)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hemiptera.d2)
+all.geog.dist=vegdist(hemiptera.d2[,51:52],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hemiptera.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hemiptera.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:13], tree.hel.all.pcnm[,89:126])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hemiptera.d2[,5:13]~hemiptera.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+hemiptera.d2=hemiptera.d2.2[hemiptera.d2.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(hemiptera.d2[,5:13], hemiptera.d2[,23:47])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hemiptera.d2[,5:13],hemiptera.d2[,53:87])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hemiptera.d2)
+all.geog.dist=vegdist(hemiptera.d2[,51:52],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hemiptera.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hemiptera.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:13], tree.hel.all.pcnm[,89:120])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hemiptera.d2[,5:13]~hemiptera.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+hemiptera.d2=hemiptera.d2.2[hemiptera.d2.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(hemiptera.d2[,5:13], hemiptera.d2[,23:47])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hemiptera.d2[,5:13],hemiptera.d2[,c(53:87)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hemiptera.d2)
+all.geog.dist=vegdist(hemiptera.d2[,51:52],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hemiptera.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hemiptera.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:13], tree.hel.all.pcnm[89:107])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hemiptera.d2[,5:13]~hemiptera.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Hymenoptera ####
+hymenoptera.d2=date2[,c(1:4,118:144,159:233)]
+#remove NAs.
+hymenoptera.d2=na.omit(hymenoptera.d2)
+#save a back-up for later, just in case.
+hymenoptera.d2.2=hymenoptera.d2
+##rda by soil
+colnames(hymenoptera.d2)
+hel.rda.fulsoil = rda(hymenoptera.d2[,5:31], hymenoptera.d2[,41:65])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hymenoptera.d2[,5:31],hymenoptera.d2[,c(71:105)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hymenoptera.d2)
+all.geog.dist=vegdist(hymenoptera.d2[,69:70],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hymenoptera.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hymenoptera.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:31], tree.hel.all.pcnm[,107:144])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hymenoptera.d2[,5:31]~hymenoptera.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+hymenoptera.d2=hymenoptera.d2.2[hymenoptera.d2.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(hymenoptera.d2[,5:31], hymenoptera.d2[,41:65])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hymenoptera.d2[,5:31],hymenoptera.d2[,71:105])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hymenoptera.d2)
+all.geog.dist=vegdist(hymenoptera.d2[,69:70],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hymenoptera.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hymenoptera.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:31], tree.hel.all.pcnm[,107:138])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hymenoptera.d2[,5:31]~hymenoptera.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+hymenoptera.d2=hymenoptera.d2.2[hymenoptera.d2.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(hymenoptera.d2[,5:31], hymenoptera.d2[,41:65])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hymenoptera.d2[,5:31],hymenoptera.d2[,c(71:105)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hymenoptera.d2)
+all.geog.dist=vegdist(hymenoptera.d2[,69:70],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hymenoptera.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hymenoptera.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:31], tree.hel.all.pcnm[,107:125])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hymenoptera.d2[,5:31]~hymenoptera.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Lepidoptera ####
+lepidoptera.d2=date2[,c(1:4,145:149,159:233)]
+#remove NAs.
+lepidoptera.d2=na.omit(lepidoptera.d2)
+#save a back-up for later, just in case.
+lepidoptera.d2.2=lepidoptera.d2
+##rda by soil
+colnames(lepidoptera.d2)
+hel.rda.fulsoil = rda(lepidoptera.d2[,5:9], lepidoptera.d2[,19:43])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(lepidoptera.d2[,5:9],lepidoptera.d2[,c(49:83)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(lepidoptera.d2)
+all.geog.dist=vegdist(lepidoptera.d2[,47:48],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(lepidoptera.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(lepidoptera.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,85:122])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(lepidoptera.d2[,5:9]~lepidoptera.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+lepidoptera.d2=lepidoptera.d2.2[lepidoptera.d2.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(lepidoptera.d2[,5:9], lepidoptera.d2[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(lepidoptera.d2[,5:9],lepidoptera.d2[,49:83])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(lepidoptera.d2)
+all.geog.dist=vegdist(lepidoptera.d2[,47:48],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(lepidoptera.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(lepidoptera.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,85:116])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(lepidoptera.d2[,5:9]~lepidoptera.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+lepidoptera.d2=lepidoptera.d2.2[lepidoptera.d2.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(lepidoptera.d2[,5:9], lepidoptera.d2[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(lepidoptera.d2[,5:9],lepidoptera.d2[,c(49:83)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(lepidoptera.d2)
+all.geog.dist=vegdist(lepidoptera.d2[,47:48],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(lepidoptera.d2,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(lepidoptera.d2,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,85:103])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(lepidoptera.d2[,5:9]~lepidoptera.d2$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+```
+```{r Date 3}
+#### Aranaea ####
+aranaea.d3=date3[,c(1:4,8:20,159:233)]
+#remove NAs.
+aranaea.d3=na.omit(aranaea.d3)
+#save a back-up for later, just in case.
+aranaea.d3.2=aranaea.d3
+##rda by soil
+colnames(aranaea.d3)
+hel.rda.fulsoil = rda(aranaea.d3[,5:17], aranaea.d3[,27:51])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(aranaea.d3[,5:17],aranaea.d3[,c(57:91)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(aranaea.d3)
+all.geog.dist=vegdist(aranaea.d3[,55:56],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(aranaea.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(aranaea.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:17], tree.hel.all.pcnm[,93:129])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(aranaea.d3[,5:17]~aranaea.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+aranaea.d3=aranaea.d3.2[aranaea.d3.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(aranaea.d3[,5:17], aranaea.d3[,27:51])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(aranaea.d3[,5:17],aranaea.d3[,57:91])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(aranaea.d3)
+all.geog.dist=vegdist(aranaea.d3[,55:56],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(aranaea.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(aranaea.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:17], tree.hel.all.pcnm[,93:123])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(aranaea.d3[,5:17]~aranaea.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE PLOTS####
+aranaea.d3=aranaea.d3.2[aranaea.d3.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(aranaea.d3[,5:17], aranaea.d3[,27:51])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(aranaea.d3[,5:17],aranaea.d3[,c(57:91)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(aranaea.d3)
+all.geog.dist=vegdist(aranaea.d3[,55:56],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(aranaea.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(aranaea.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:17], tree.hel.all.pcnm[,93:111])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(aranaea.d3[,5:17]~aranaea.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+#### Coleoptera ####
+coleoptera.d3=date3[,c(1:4,21:67,159:233)]
+#remove NAs.
+coleoptera.d3=na.omit(coleoptera.d3)
+#save a back-up for later, just in case.
+coleoptera.d3.2=coleoptera.d3
+##rda by soil
+colnames(coleoptera.d3)
+hel.rda.fulsoil = rda(coleoptera.d3[,5:51], coleoptera.d3[,61:85])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(coleoptera.d3[,5:51],coleoptera.d3[,c(91:125)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(coleoptera.d3)
+all.geog.dist=vegdist(coleoptera.d3[,89:90],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(coleoptera.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(coleoptera.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:51], tree.hel.all.pcnm[,127:163])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(coleoptera.d3[,5:51]~coleoptera.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+coleoptera.d3=coleoptera.d3.2[coleoptera.d3.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(coleoptera.d3[,5:51], coleoptera.d3[,61:85])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(coleoptera.d3[,5:51],coleoptera.d3[,91:125])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(coleoptera.d3)
+all.geog.dist=vegdist(coleoptera.d3[,89:90],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(coleoptera.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(coleoptera.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:51], tree.hel.all.pcnm[,127:157])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(coleoptera.d3[,5:51]~coleoptera.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+coleoptera.d3=coleoptera.d3.2[coleoptera.d3.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(coleoptera.d3[,5:51], coleoptera.d3[,61:85])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(coleoptera.d3[,5:51],coleoptera.d3[,c(91:125)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(coleoptera.d3)
+all.geog.dist=vegdist(coleoptera.d3[,89:90],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(coleoptera.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(coleoptera.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:51], tree.hel.all.pcnm[,127:145])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(coleoptera.d3[,5:51]~coleoptera.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Diptera ####
+diptera.d3=date3[,c(1:4,70:107,159:233)]
+#remove NAs.
+diptera.d3=na.omit(diptera.d3)
+#save a back-up for later, just in case.
+diptera.d3.2=diptera.d3
+##rda by soil
+colnames(diptera.d3)
+hel.rda.fulsoil = rda(diptera.d3[,5:42], diptera.d3[,52:76])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(diptera.d3[,5:42],diptera.d3[,c(82:116)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(diptera.d3)
+all.geog.dist=vegdist(diptera.d3[,80:81],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(diptera.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(diptera.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:42], tree.hel.all.pcnm[,118:154])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(diptera.d3[,5:42]~diptera.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+diptera.d3=diptera.d3.2[diptera.d3.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(diptera.d3[,5:42], diptera.d3[,52:76])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(diptera.d3[,5:42],diptera.d3[,82:116])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(diptera.d3)
+all.geog.dist=vegdist(diptera.d3[,80:81],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(diptera.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(diptera.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:42], tree.hel.all.pcnm[,118:148])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(diptera.d3[,5:42]~diptera.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+diptera.d3=diptera.d3.2[diptera.d3.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(diptera.d3[,5:42], diptera.d3[,52:76])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(diptera.d3[,5:42],diptera.d3[,c(82:116)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(diptera.d3)
+all.geog.dist=vegdist(diptera.d3[,80:81],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(diptera.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(diptera.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:42], tree.hel.all.pcnm[,118:136])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(diptera.d3[,5:42]~diptera.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+#### Hemiptera ####
+hemiptera.d3=date3[,c(1:4,109:117,159:233)]
+#remove NAs.
+hemiptera.d3=na.omit(hemiptera.d3)
+#save a back-up for later, just in case.
+hemiptera.d3.2=hemiptera.d3
+##rda by soil
+colnames(hemiptera.d3)
+hel.rda.fulsoil = rda(hemiptera.d3[,5:13], hemiptera.d3[,23:47])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hemiptera.d3[,5:13],hemiptera.d3[,c(53:87)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hemiptera.d3)
+all.geog.dist=vegdist(hemiptera.d3[,51:52],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hemiptera.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hemiptera.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:13], tree.hel.all.pcnm[,89:125])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hemiptera.d3[,5:13]~hemiptera.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+hemiptera.d3=hemiptera.d3.2[hemiptera.d3.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(hemiptera.d3[,5:13], hemiptera.d3[,23:47])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hemiptera.d3[,5:13],hemiptera.d3[,53:87])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hemiptera.d3)
+all.geog.dist=vegdist(hemiptera.d3[,51:52],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hemiptera.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hemiptera.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:13], tree.hel.all.pcnm[,89:119])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hemiptera.d3[,5:13]~hemiptera.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+hemiptera.d3=hemiptera.d3.2[hemiptera.d3.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(hemiptera.d3[,5:13], hemiptera.d3[,23:47])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hemiptera.d3[,5:13],hemiptera.d3[,c(53:87)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hemiptera.d3)
+all.geog.dist=vegdist(hemiptera.d3[,51:52],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hemiptera.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hemiptera.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:13], tree.hel.all.pcnm[89:107])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hemiptera.d3[,5:13]~hemiptera.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Hymenoptera ####
+hymenoptera.d3=date3[,c(1:4,118:144,159:233)]
+#remove NAs.
+hymenoptera.d3=na.omit(hymenoptera.d3)
+#save a back-up for later, just in case.
+hymenoptera.d3.2=hymenoptera.d3
+##rda by soil
+colnames(hymenoptera.d3)
+hel.rda.fulsoil = rda(hymenoptera.d3[,5:31], hymenoptera.d3[,41:65])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hymenoptera.d3[,5:31],hymenoptera.d3[,c(71:105)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hymenoptera.d3)
+all.geog.dist=vegdist(hymenoptera.d3[,69:70],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hymenoptera.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hymenoptera.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:31], tree.hel.all.pcnm[,107:143])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hymenoptera.d3[,5:31]~hymenoptera.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+hymenoptera.d3=hymenoptera.d3.2[hymenoptera.d3.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(hymenoptera.d3[,5:31], hymenoptera.d3[,41:65])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hymenoptera.d3[,5:31],hymenoptera.d3[,71:105])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hymenoptera.d3)
+all.geog.dist=vegdist(hymenoptera.d3[,69:70],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hymenoptera.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hymenoptera.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:31], tree.hel.all.pcnm[,107:137])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hymenoptera.d3[,5:31]~hymenoptera.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+hymenoptera.d3=hymenoptera.d3.2[hymenoptera.d3.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(hymenoptera.d3[,5:31], hymenoptera.d3[,41:65])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hymenoptera.d3[,5:31],hymenoptera.d3[,c(71:105)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hymenoptera.d3)
+all.geog.dist=vegdist(hymenoptera.d3[,69:70],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hymenoptera.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hymenoptera.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:31], tree.hel.all.pcnm[,107:125])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hymenoptera.d3[,5:31]~hymenoptera.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Lepidoptera ####
+lepidoptera.d3=date3[,c(1:4,145:149,159:233)]
+#remove NAs.
+lepidoptera.d3=na.omit(lepidoptera.d3)
+#save a back-up for later, just in case.
+lepidoptera.d3.2=lepidoptera.d3
+##rda by soil
+colnames(lepidoptera.d3)
+hel.rda.fulsoil = rda(lepidoptera.d3[,5:9], lepidoptera.d3[,19:43])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(lepidoptera.d3[,5:9],lepidoptera.d3[,c(49:83)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(lepidoptera.d3)
+all.geog.dist=vegdist(lepidoptera.d3[,47:48],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(lepidoptera.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(lepidoptera.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,85:121])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(lepidoptera.d3[,5:9]~lepidoptera.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+lepidoptera.d3=lepidoptera.d3.2[lepidoptera.d3.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(lepidoptera.d3[,5:9], lepidoptera.d3[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(lepidoptera.d3[,5:9],lepidoptera.d3[,49:83])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(lepidoptera.d3)
+all.geog.dist=vegdist(lepidoptera.d3[,47:48],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(lepidoptera.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(lepidoptera.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,85:115])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(lepidoptera.d3[,5:9]~lepidoptera.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+lepidoptera.d3=lepidoptera.d3.2[lepidoptera.d3.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(lepidoptera.d3[,5:9], lepidoptera.d3[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(lepidoptera.d3[,5:9],lepidoptera.d3[,c(49:83)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(lepidoptera.d3)
+all.geog.dist=vegdist(lepidoptera.d3[,47:48],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(lepidoptera.d3,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(lepidoptera.d3,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,85:103])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(lepidoptera.d3[,5:9]~lepidoptera.d3$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+```
+```{r Date 1}
+#### Aranaea ####
+aranaea.d4=date4[,c(1:4,8:20,159:233)]
+#remove NAs.
+aranaea.d4=na.omit(aranaea.d4)
+#save a back-up for later, just in case.
+aranaea.d4.2=aranaea.d4
+##rda by soil
+colnames(aranaea.d4)
+hel.rda.fulsoil = rda(aranaea.d4[,5:17], aranaea.d4[,27:51])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(aranaea.d4[,5:17],aranaea.d4[,c(57:91)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(aranaea.d4)
+all.geog.dist=vegdist(aranaea.d4[,55:56],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(aranaea.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(aranaea.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:17], tree.hel.all.pcnm[,93:125])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(aranaea.d4[,5:17]~aranaea.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+aranaea.d4=aranaea.d4.2[aranaea.d4.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(aranaea.d4[,5:17], aranaea.d4[,27:51])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(aranaea.d4[,5:17],aranaea.d4[,57:91])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(aranaea.d4)
+all.geog.dist=vegdist(aranaea.d4[,55:56],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(aranaea.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(aranaea.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:17], tree.hel.all.pcnm[,93:122])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(aranaea.d4[,5:17]~aranaea.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+aranaea.d4=aranaea.d4.2[aranaea.d4.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(aranaea.d4[,5:17], aranaea.d4[,27:51])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(aranaea.d4[,5:17],aranaea.d4[,c(57:91)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(aranaea.d4)
+all.geog.dist=vegdist(aranaea.d4[,55:56],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(aranaea.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(aranaea.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:17], tree.hel.all.pcnm[,93:111])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(aranaea.d4[,5:17]~aranaea.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+#### Coleoptera ####
+coleoptera.d4=date4[,c(1:4,21:67,159:233)]
+#remove NAs.
+coleoptera.d4=na.omit(coleoptera.d4)
+#save a back-up for later, just in case.
+coleoptera.d4.2=coleoptera.d4
+##rda by soil
+colnames(coleoptera.d4)
+hel.rda.fulsoil = rda(coleoptera.d4[,5:51], coleoptera.d4[,61:85])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(coleoptera.d4[,5:51],coleoptera.d4[,c(91:125)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(coleoptera.d4)
+all.geog.dist=vegdist(coleoptera.d4[,89:90],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(coleoptera.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(coleoptera.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:51], tree.hel.all.pcnm[,127:159])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(coleoptera.d4[,5:51]~coleoptera.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+coleoptera.d4=coleoptera.d4.2[coleoptera.d4.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(coleoptera.d4[,5:51], coleoptera.d4[,61:85])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(coleoptera.d4[,5:51],coleoptera.d4[,91:125])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(coleoptera.d4)
+all.geog.dist=vegdist(coleoptera.d4[,89:90],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(coleoptera.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(coleoptera.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:51], tree.hel.all.pcnm[,127:156])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(coleoptera.d4[,5:51]~coleoptera.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+coleoptera.d4=coleoptera.d4.2[coleoptera.d4.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(coleoptera.d4[,5:51], coleoptera.d4[,61:85])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(coleoptera.d4[,5:51],coleoptera.d4[,c(91:125)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(coleoptera.d4)
+all.geog.dist=vegdist(coleoptera.d4[,89:90],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(coleoptera.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(coleoptera.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:51], tree.hel.all.pcnm[,127:145])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(coleoptera.d4[,5:51]~coleoptera.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Diptera ####
+diptera.d4=date4[,c(1:4,70:107,159:233)]
+#remove NAs.
+diptera.d4=na.omit(diptera.d4)
+#save a back-up for later, just in case.
+diptera.d4.2=diptera.d4
+##rda by soil
+colnames(diptera.d4)
+hel.rda.fulsoil = rda(diptera.d4[,5:42], diptera.d4[,52:76])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(diptera.d4[,5:42],diptera.d4[,c(82:116)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(diptera.d4)
+all.geog.dist=vegdist(diptera.d4[,80:81],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(diptera.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(diptera.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:42], tree.hel.all.pcnm[,118:150])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(diptera.d4[,5:42]~diptera.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+diptera.d4=diptera.d4.2[diptera.d4.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(diptera.d4[,5:42], diptera.d4[,52:76])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(diptera.d4[,5:42],diptera.d4[,82:116])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(diptera.d4)
+all.geog.dist=vegdist(diptera.d4[,80:81],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(diptera.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(diptera.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:42], tree.hel.all.pcnm[,118:147])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(diptera.d4[,5:42]~diptera.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+diptera.d4=diptera.d4.2[diptera.d4.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(diptera.d4[,5:42], diptera.d4[,52:76])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(diptera.d4[,5:42],diptera.d4[,c(82:116)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(diptera.d4)
+all.geog.dist=vegdist(diptera.d4[,80:81],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(diptera.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(diptera.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:42], tree.hel.all.pcnm[,118:136])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(diptera.d4[,5:42]~diptera.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+#### Hemiptera ####
+hemiptera.d4=date4[,c(1:4,109:117,159:233)]
+#remove NAs.
+hemiptera.d4=na.omit(hemiptera.d4)
+#save a back-up for later, just in case.
+hemiptera.d4.2=hemiptera.d4
+##rda by soil
+colnames(hemiptera.d4)
+hel.rda.fulsoil = rda(hemiptera.d4[,5:13], hemiptera.d4[,23:47])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hemiptera.d4[,5:13],hemiptera.d4[,c(53:87)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hemiptera.d4)
+all.geog.dist=vegdist(hemiptera.d4[,51:52],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hemiptera.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hemiptera.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:13], tree.hel.all.pcnm[,89:121])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hemiptera.d4[,5:13]~hemiptera.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+hemiptera.d4=hemiptera.d4.2[hemiptera.d4.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(hemiptera.d4[,5:13], hemiptera.d4[,23:47])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hemiptera.d4[,5:13],hemiptera.d4[,53:87])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hemiptera.d4)
+all.geog.dist=vegdist(hemiptera.d4[,51:52],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hemiptera.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hemiptera.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:13], tree.hel.all.pcnm[,89:118])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hemiptera.d4[,5:13]~hemiptera.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+hemiptera.d4=hemiptera.d4.2[hemiptera.d4.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(hemiptera.d4[,5:13], hemiptera.d4[,23:47])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hemiptera.d4[,5:13],hemiptera.d4[,c(53:87)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hemiptera.d4)
+all.geog.dist=vegdist(hemiptera.d4[,51:52],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hemiptera.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hemiptera.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:13], tree.hel.all.pcnm[89:107])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hemiptera.d4[,5:13]~hemiptera.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Hymenoptera ####
+hymenoptera.d4=date4[,c(1:4,118:144,159:233)]
+#remove NAs.
+hymenoptera.d4=na.omit(hymenoptera.d4)
+#save a back-up for later, just in case.
+hymenoptera.d4.2=hymenoptera.d4
+##rda by soil
+colnames(hymenoptera.d4)
+hel.rda.fulsoil = rda(hymenoptera.d4[,5:31], hymenoptera.d4[,41:65])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hymenoptera.d4[,5:31],hymenoptera.d4[,c(71:105)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hymenoptera.d4)
+all.geog.dist=vegdist(hymenoptera.d4[,69:70],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hymenoptera.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hymenoptera.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:31], tree.hel.all.pcnm[,107:139])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hymenoptera.d4[,5:31]~hymenoptera.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+hymenoptera.d4=hymenoptera.d4.2[hymenoptera.d4.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(hymenoptera.d4[,5:31], hymenoptera.d4[,41:65])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hymenoptera.d4[,5:31],hymenoptera.d4[,71:105])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hymenoptera.d4)
+all.geog.dist=vegdist(hymenoptera.d4[,69:70],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hymenoptera.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hymenoptera.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:31], tree.hel.all.pcnm[,107:136])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hymenoptera.d4[,5:31]~hymenoptera.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+hymenoptera.d4=hymenoptera.d4.2[hymenoptera.d4.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(hymenoptera.d4[,5:31], hymenoptera.d4[,41:65])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(hymenoptera.d4[,5:31],hymenoptera.d4[,c(71:105)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(hymenoptera.d4)
+all.geog.dist=vegdist(hymenoptera.d4[,69:70],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(hymenoptera.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(hymenoptera.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:31], tree.hel.all.pcnm[,107:125])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+## no variance partitioning needed because no significance/soil effect.
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(hymenoptera.d4[,5:31]~hymenoptera.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+#### Lepidoptera ####
+lepidoptera.d4=date4[,c(1:4,145:149,159:233)]
+#remove NAs.
+lepidoptera.d4=na.omit(lepidoptera.d4)
+#save a back-up for later, just in case.
+lepidoptera.d4.2=lepidoptera.d4
+##rda by soil
+colnames(lepidoptera.d4)
+hel.rda.fulsoil = rda(lepidoptera.d4[,5:9], lepidoptera.d4[,19:43])
+anova(hel.rda.fulsoil)#AYO
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(lepidoptera.d4[,5:9],lepidoptera.d4[,c(49:83)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(lepidoptera.d4)
+all.geog.dist=vegdist(lepidoptera.d4[,47:48],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(lepidoptera.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(lepidoptera.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,85:117])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(lepidoptera.d4[,5:9]~lepidoptera.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+####CORE+EDGE####
+lepidoptera.d4=lepidoptera.d4.2[lepidoptera.d4.2$EP!="Trans",]
+##rda by soil
+hel.rda.fulsoil = rda(lepidoptera.d4[,5:9], lepidoptera.d4[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(lepidoptera.d4[,5:9],lepidoptera.d4[,49:83])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(lepidoptera.d4)
+all.geog.dist=vegdist(lepidoptera.d4[,47:48],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(lepidoptera.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(lepidoptera.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,85:114])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+## Variance partitioning - Not needed because there's no pcnm effect
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(lepidoptera.d4[,5:9]~lepidoptera.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+
+####CORE PLOTS####
+lepidoptera.d4=lepidoptera.d4.2[lepidoptera.d4.2$EP=="Core",]
+##rda by soil
+hel.rda.fulsoil = rda(lepidoptera.d4[,5:9], lepidoptera.d4[,19:43])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by trees
+hel.rda.fulsoil = rda(lepidoptera.d4[,5:9],lepidoptera.d4[,c(49:83)])
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+
+##Pitfall inverts by PCNM
+colnames(lepidoptera.d4)
+all.geog.dist=vegdist(lepidoptera.d4[,47:48],method="euclid")
+all.pcnm1=pcnm(all.geog.dist)
+all.pcnmvecs=all.pcnm1$vectors
+# If you can get the PCNM library to run, you could do the line below to select only significantly structured PCNMs
+#tree.hel.all.pcnm=cbind(lepidoptera.d4,all.pcnmvecs[,which(all.pcnm1$Moran_I[,2]<0.05)])
+tree.hel.all.pcnm=cbind(lepidoptera.d4,all.pcnmvecs)
+names(tree.hel.all.pcnm)
+# Now run step 1, global analysis
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:9], tree.hel.all.pcnm[,85:103])
+anova(hel.rda.all.fulpcnm)
+RsquareAdj(hel.rda.all.fulpcnm)
+global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
+
+##INVERTS BY ECOSYSTEM
+hel.rda.fulsoil = rda(lepidoptera.d4[,5:9]~lepidoptera.d4$TerrType)
+anova(hel.rda.fulsoil)
+RsquareAdj(hel.rda.fulsoil)
+global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
+```
+
 ```{r CCA}
 ## Date 1
 ##Let's take out the TerrTypes that we don't test (like things that include D and thus don't have replicates)
