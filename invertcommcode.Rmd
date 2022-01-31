@@ -87,6 +87,7 @@ library(vegan)
 library(nlme)
 library(ggplot2)
 library(lme4)
+library(labdsv)
 dim(commdata)
 
 #merge soil and tree data with commdata
@@ -4019,6 +4020,34 @@ anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 ```
+
+```{r indval}
+sppabun=commdata[,1:158]
+cores=sppabun[sppabun$EP=="Core",]
+#cores=cores[cores$Ecosystem!="S",]
+##Remove species that don't have individuals in the core
+colnames(cores)
+cores=cores[,c(1:12,15:16,18,20,22,24,26:27,30,32,35,37,39:40,42:66,68,70:76,78:83,85:92,94:103,106,108,111,113:115,117:124,126:127,129:133,135:140,143:144,146:147,149:152,155,158)]
+
+indvalsummary=indval(cores[,8:120], clustering=cores$Habitat)
+summary(indvalsummary, p=0.05,type='short', digits=2, show=p, sort=FALSE)
+
+
+###Let's try this again with the entire forest. For shits and giggs.
+totalcomm=sppabun[,c(1:12,14:20,22,25:30,32:33,35:106,108,110:144,146:147,149:152,154:156,158)]
+indvaltotal=indval(totalcomm[,8:147],clustering=sppabun$Habitat)
+summary(indvaltotal, p=0.05,type='short', digits=2, show=p, sort=FALSE)
+
+###One last time with reference to edges.
+#subset the cores out.
+edges=sppabun[sppabun$EP=="Edge"|sppabun$EP=="Trans",]
+#remove species that aren't present (ACESIL, CARTOM, QUEBIC, SALNIG, TOXVER, VIBLEN)
+edges=edges[,c(1:7,10:12,14:20,22,25:30,33,35:39,41:43,45:48,51:58,60,62:77,79:102,104:105,110,112:113,115:119,122:129,131:132,134:142,144,146:147,150,152,154,156)]
+#run the stats
+indvalsummary=indval(edges[,8:121], clustering=edges$Habitat)
+summary(indvalsummary, p=0.05,type='short', digits=2, show=p, sort=FALSE)
+```
+
 
 ```{r CCA}
 ## Date 1

@@ -6055,6 +6055,34 @@ colnames(pitfall)=pitfall[1,]
 lme(Hdate1~TerrType+Plot, data=date1)
 ```
 
+```{r indval}
+sppabun=pitfall[,c(1:205,242:244)]
+cores=sppabun[sppabun$EP=="Core",]
+#cores=cores[cores$Ecosystem!="S",]
+##Remove species that don't have individuals in the core
+colnames(cores)
+cores=cores[,c(1:5,7:10,12:25,28:59,61:67,69,71:73,75:79,81:83,87:105,107:108,110,114,116,118:122,124:125,127,129:142,144,146:150,152:153,155,157:159,161:162,165:167,169,171,174:176,178:182,184:190,192:205,208)]
+
+indvalsummary=indval(cores[,5:168], clustering=cores$TerrType)
+summary(indvalsummary, p=0.05,type='short', digits=2, show=p, sort=FALSE)
+
+
+###Let's try this again with the entire forest. For shits and giggs.
+totalcomm=sppabun[,c(1:5,7:26,28:67,69,71:73,75:79,81:83,85:105,107:110,112,114,116,118:127,129:144,146:150,152:153,155,157:159,161:162,165:167,169,171,174:190,192:208)]
+indvaltotal=indval(totalcomm[,5:180],clustering=sppabun$TerrType)
+summary(indvaltotal, p=0.05,type='short', digits=2, show=p, sort=FALSE)
+
+###One last time with reference to edges.
+#subset the cores out.
+edges=sppabun[sppabun$EP=="Edge"|sppabun$EP=="Trans",]
+#remove species that aren't present
+edges=edges[,c(1:4,7:20,22:26,28:32,34:37,39,42:46,48:60,62,64:67,69,71:73,75:79,81:82,85:105,107:109,112,116,118:120,122:127,131:138,140:144,147:150,152:153,155,157,159,161:162,166:167,169,174:190,192:208)]
+#run the stats
+indvalsummary=indval(edges[,5:160], clustering=edges$TerrType)
+summary(indvalsummary, p=0.05,type='short', digits=2, show=p, sort=FALSE)
+#This would suggest that CARCAR, TILAME, and ULMSP are specialists in reference to edges/transition plots.
+```
+
 ```{r CCA; H1}
 ## Date 1
 ##Let's take out the TerrTypes that we don't test (like things that include D and thus don't have replicates)
