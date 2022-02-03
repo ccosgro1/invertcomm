@@ -193,7 +193,7 @@ mtext(side=1,at=1,"6 Oct 2015",las=2,line=1, srt=45)
 mtext(side=1,at=2,"5 May 2016",las=2,line=1)
 mtext(side=1,at=3,"10 Aug 2016",las=2,line=1)
 mtext(side=1,at=4,"15 Oct 2016",las=2,line=1)
-labels=lab, srt=45, adj=1, xpd=TRUE)
+labels=lab, srt=45, adj=1, xpd=TRUE
 
 richness(date1[,8:158])
 
