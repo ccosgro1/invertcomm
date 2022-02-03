@@ -96,7 +96,7 @@ global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 
 ####CORE PLOTS####
-date1=date1.2[date1.2$EP.x=="Core",]
+date1=date1.2[date1.2$EP=="Core",]
 ##rda by soil
 hel.rda.fulsoil = rda(date1[,5:205], date1[,229:253])
 anova(hel.rda.fulsoil)
@@ -149,7 +149,7 @@ RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 ####CORE+EDGE####
-date1=date1.2[date1.2$EP.x!="Trans",]
+date1=date1.2[date1.2$EP!="Trans",]
 ##rda by soil
 hel.rda.fulsoil = rda(date1[,5:205], date1[,229:253])
 anova(hel.rda.fulsoil)
@@ -241,7 +241,7 @@ RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 ####CORE PLOTS####
-date2=date2.2[date2.2$EP.x=="Core",]
+date2=date2.2[date2.2$EP=="Core",]
 ##rda by soil
 hel.rda.fulsoil = rda(date2[,5:205], date2[,229:253])
 anova(hel.rda.fulsoil)
@@ -318,7 +318,7 @@ global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 
 ####CORE+EDGE####
-date2=date2.2[date2.2$EP.x!="Trans",]
+date2=date2.2[date2.2$EP!="Trans",]
 ##rda by soil
 hel.rda.fulsoil = rda(date2[,5:205], date2[,229:253])
 anova(hel.rda.fulsoil)
@@ -451,7 +451,7 @@ global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 
 ####CORE PLOTS####
-date3=date3.2[date3.2$EP.x=="Core",]
+date3=date3.2[date3.2$EP=="Core",]
 ##rda by soil
 hel.rda.fulsoil = rda(date3[,5:205], date3[,229:253])
 anova(hel.rda.fulsoil)
@@ -504,7 +504,7 @@ RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 ####CORE+EDGE####
-date3=date3.2[date3.2$EP.x!="Trans",]
+date3=date3.2[date3.2$EP!="Trans",]
 ##rda by soil
 hel.rda.fulsoil = rda(date3[,5:205], date3[,229:253])
 anova(hel.rda.fulsoil)
@@ -596,7 +596,7 @@ RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 ####CORE PLOTS####
-date4=date4.2[date4.2$EP.x=="Core",]
+date4=date4.2[date4.2$EP=="Core",]
 ##rda by soil
 hel.rda.fulsoil = rda(date4[,5:205], date4[,229:253])
 anova(hel.rda.fulsoil)
@@ -633,7 +633,7 @@ RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 ####CORE+EDGE####
-date4=date4.2[date4.2$EP.x!="Trans",]
+date4=date4.2[date4.2$EP!="Trans",]
 ##rda by soil
 hel.rda.fulsoil = rda(date4[,5:205], date4[,229:253])
 anova(hel.rda.fulsoil)
