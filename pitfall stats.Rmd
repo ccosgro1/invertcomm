@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r load data}
 pitfall=read.csv("C:/Users/crc31/dropbox/Jennings Invertebrates/Cosgrove pitfall inverts_comb.csv", header=T)
 dim(pitfall)
+ordersums=read.csv("C:/Users/crc31/dropbox/Jennings Invertebrates/Cosgrove pitfall inverts_ordsums.csv", header=T)
 soildata=read.csv("C:/Users/crc31/OneDrive/Documents/School/Grad School/SpatialStats/soil data May 08 for tree plots.csv")
 treedata=read.csv("C:/Users/crc31/Dropbox/Jennings 2016/New Adult Basal Area.csv")
 #fiddle with the tree data
@@ -35,6 +36,7 @@ tree.hel[,10:42]=sqrt(tree.hel[,10:42])
 
 #change NAs in the count columns to 0s.
 pitfall[is.na(pitfall)]<-0
+ordersums[is.na(ordersums)]<-0
 
 ##the column "kick" is designed to remove rows that are mis-labeled or duplicate samples. e.g., like 3 Q1 from the same date. Let's remove those.
 pitfall=subset(pitfall, kick=="no")
@@ -52,6 +54,18 @@ date4=pitfall[pitfall$Sample.pd=="Date 4",]
 
 #load libraries
 library(vegan)
+```
+
+```{r Rank Abundance}
+# Let's look at a rank abundance plot
+bug.colsums=apply(ordersums[,5:29],2,sum)
+plot(rank(bug.colsums),bug.colsums, xlab="Invert species")
+
+# Determining rank abundance within an order across the ecosystems
+names(ordersums)[names(ordersums)=='ï..Site']<-'Plot'
+orderrab=merge(ordersums,tree.hel, by="Plot")
+
+aggregate(orderrab$Amphipoda, by=list(orderrab$ecosys), FUN='sum')
 ```
 
 Decoupling Stats - Community-wide
