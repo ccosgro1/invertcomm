@@ -108,6 +108,25 @@ bug.colsums=apply(ordersums[,5:18],2,sum)
 plot(rank(bug.colsums),bug.colsums, xlab="Invert species")
 
 aggregate(ordersums$Psocoptera, by=list(ordersums$Habitat), FUN='sum')
+
+orderrab=ordersums
+
+##separate out by Habitat so that I can figure out within ecosystem rank abundance.
+orderrab.bot=orderrab[orderrab$Habitat=="B",]
+bug.colsums=apply(orderrab.bot[,5:18],2,sum)
+plot(rank(bug.colsums),bug.colsums, xlab="Invert species")
+
+orderrab.dis=orderrab[orderrab$Habitat=="D",]
+bug.colsums=apply(orderrab.dis[,5:18],2,sum)
+plot(rank(bug.colsums),bug.colsums, xlab="Invert species")
+
+orderrab.rip=orderrab[orderrab$Habitat=="R",]
+bug.colsums=apply(orderrab.rip[,5:18],2,sum)
+plot(rank(bug.colsums),bug.colsums, xlab="Invert species")
+
+orderrab.upl=orderrab[orderrab$Habitat=="U",]
+bug.colsums=apply(orderrab.upl[,5:18],2,sum)
+plot(rank(bug.colsums),bug.colsums, xlab="Invert species")
 ```
 
 ```{r Exploratory Stats}

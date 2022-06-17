@@ -54,6 +54,7 @@ date4=pitfall[pitfall$Sample.pd=="Date 4",]
 
 #load libraries
 library(vegan)
+library(nlme)
 ```
 
 ```{r Rank Abundance}
@@ -66,6 +67,23 @@ names(ordersums)[names(ordersums)=='ï..Site']<-'Plot'
 orderrab=merge(ordersums,tree.hel, by="Plot")
 
 aggregate(orderrab$Amphipoda, by=list(orderrab$ecosys), FUN='sum')
+
+##separate out by ecosys so that I can figure out within ecosystem rank abundance.
+orderrab.bot=orderrab[orderrab$ecosys=="B",]
+bug.colsums=apply(orderrab.bot[,5:29],2,sum)
+plot(rank(bug.colsums),bug.colsums, xlab="Invert species")
+
+orderrab.dis=orderrab[orderrab$ecosys=="D",]
+bug.colsums=apply(orderrab.dis[,5:29],2,sum)
+plot(rank(bug.colsums),bug.colsums, xlab="Invert species")
+
+orderrab.rip=orderrab[orderrab$ecosys=="R",]
+bug.colsums=apply(orderrab.rip[,5:29],2,sum)
+plot(rank(bug.colsums),bug.colsums, xlab="Invert species")
+
+orderrab.upl=orderrab[orderrab$ecosys=="U",]
+bug.colsums=apply(orderrab.upl[,5:29],2,sum)
+plot(rank(bug.colsums),bug.colsums, xlab="Invert species")
 ```
 
 Decoupling Stats - Community-wide
@@ -5938,9 +5956,9 @@ global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 #Gamma diversity between ecosystems
 rownames(date1)=date1[,1]
 dim(date1)
-Hdate1=diversity(date1[1:89,5:205])
+Hdate1=diversity(date1.2[1:89,5:205])
 raredate1=rarefy(date1[,5:205], 2)-1
-specno=specnumber(date1[5:205], MARGIN=1)
+specno=specnumber(date1.2[5:205], MARGIN=1)
 
 botrich=lme(specno~as.factor(TerrType)*Date+Plot,random=~1, data=pitfall)
 summary(botrich)
