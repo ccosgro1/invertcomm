@@ -10,12 +10,12 @@ dim(otu.tax)
 names(otu.tax)
 
 #Remove drosophilidae from otu.tax
-#otu.tax=otu.tax[otu.tax$family!="Drosophilidae",]
+otu.tax=otu.tax[otu.tax$family!="Drosophilidae",]
 
 
 #Remove all non-dip taxa
 otu.tax=otu.tax[otu.tax$FFG!="",]
-commdata=
+
 
 ###########################
 ### AGGREGATE OTUs to higher level taxonomic groups 
@@ -26,7 +26,7 @@ commdata=
 # Then look at the groups in the chosen taxonomic level.
 # This example creates a dataset of abundances for each class, and throws out sequences not validly assigned to a class (because including them would be meaningless)
 # Note that columns 1-10 in this dataset are the metadata, and there is some hard-coding column references around that 
-level=4
+level=5
 levels(as.factor(otu.tax[,level]))
 types=levels(as.factor(otu.tax[,level]))
 q=length(types)
@@ -42,7 +42,7 @@ for(j in 1:p){
 data.agg=data.agg[,colnames(data.agg)!="FALSE"]
 data.agg=cbind(commdata[,1:7],data.agg)
 dim(data.agg)
-write.csv(data.agg,"invertcomm_genus.csv")
+#write.csv(data.agg,"invertcomm_genus.csv")
 
 ###############
 
@@ -64,7 +64,7 @@ levels(as.factor(otu.tax[,level]))
 # Choose your group in the next line. Make sure spelling is perfect.  Don't choose "FALSE" because that is meaningless.
 spp.only=commdata[,8:158]
 #spp.only=pitfall[,5:205]
-group="herbivorous"
+group="woodfeeding"
 data.nematoda=spp.only[,otu.tax[,level]==group]
 dim(data.nematoda)
 
