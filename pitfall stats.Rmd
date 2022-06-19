@@ -1513,29 +1513,13 @@ hymenoptera.d1=na.omit(hymenoptera.d1)
 hymenoptera.d1.2=hymenoptera.d1
 ##rda by soil
 colnames(hymenoptera.d1)
-hel.rda.fulsoil = rda(hymenoptera.d1[,5:54], hymenoptera.d1[,30:54])
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:20], hymenoptera.d1[,30:54])
 anova(hel.rda.fulsoil)#AYO
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
-###Pitter patter, let's get atter. Let's do that sweet sweet forward selection
-##Forward selection
-hel.rda.fulsoil.none = rda(hymenoptera.d1[,5:54]~1)
-hel.rda.fulsoil = rda(hymenoptera.d1[,5:54], hymenoptera.d1[,30:54])
-
-hel.rda.fulsoil.full=rda(hymenoptera.d1[,5:54]~hymenoptera.d1$Ptot_long+hymenoptera.d1$Po_long+hymenoptera.d1$pH_long+hymenoptera.d1$moist_long+hymenoptera.d1$ps1_long+hymenoptera.d1$ps2_long+hymenoptera.d1$percc_long+hymenoptera.d1$cton_long+hymenoptera.d1$Ptot_nug+hymenoptera.d1$Po_nug+hymenoptera.d1$pH_nug+hymenoptera.d1$moist_nug+hymenoptera.d1$ps1_nug+hymenoptera.d1$ps2_nug+hymenoptera.d1$percc_nug+hymenoptera.d1$pomc_nug+hymenoptera.d1$cton_nug+hymenoptera.d1$Ptot_short+hymenoptera.d1$Po_short+hymenoptera.d1$pH_short+hymenoptera.d1$moist_short+hymenoptera.d1$ps1_short+hymenoptera.d1$percc_short+hymenoptera.d1$pomc_short+hymenoptera.d1$cton_short)
-
-tree.sel=ordiR2step(hel.rda.fulsoil.none,scope=formula(hel.rda.fulsoil.full),Pin=0.05,R2scope=TRUE)
-tree.sel
-
-##Just the variables forward selected
-hel.rda.fulsoil = rda(hymenoptera.d1[,5:54], hymenoptera.d1[,c(49,33,44,35,48)])
-anova(hel.rda.fulsoil)
-RsquareAdj(hel.rda.fulsoil)
-global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
-
 ##Pitfall inverts by trees
-hel.rda.fulsoil = rda(hymenoptera.d1[,5:54],hymenoptera.d1[,c(63:97)])
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:20],hymenoptera.d1[,c(63:97)])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -1550,13 +1534,13 @@ all.pcnmvecs=all.pcnm1$vectors
 tree.hel.all.pcnm=cbind(hymenoptera.d1,all.pcnmvecs)
 names(tree.hel.all.pcnm)
 # Now run step 1, global analysis
-hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:54], tree.hel.all.pcnm[,99:135])
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:20], tree.hel.all.pcnm[,99:135])
 anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
 ##INVERTS BY ECOSYSTEM
-hel.rda.fulsoil = rda(hymenoptera.d1[,5:54]~hymenoptera.d1$TerrType)
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:20]~hymenoptera.d1$TerrType)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -1564,29 +1548,13 @@ global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 ####CORE+EDGE####
 hymenoptera.d1=hymenoptera.d1.2[hymenoptera.d1.2$EP!="Trans",]
 ##rda by soil
-hel.rda.fulsoil = rda(hymenoptera.d1[,5:54], hymenoptera.d1[,30:54])
-anova(hel.rda.fulsoil)
-RsquareAdj(hel.rda.fulsoil)
-global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
-
-###Pitter patter, let's get atter. Let's do that sweet sweet forward selection
-##Forward selection
-hel.rda.fulsoil.none = rda(hymenoptera.d1[,5:54]~1)
-hel.rda.fulsoil = rda(hymenoptera.d1[,5:54], hymenoptera.d1[,30:54])
-
-hel.rda.fulsoil.full=rda(hymenoptera.d1[,5:54]~hymenoptera.d1$Ptot_long+hymenoptera.d1$Po_long+hymenoptera.d1$pH_long+hymenoptera.d1$moist_long+hymenoptera.d1$ps1_long+hymenoptera.d1$ps2_long+hymenoptera.d1$percc_long+hymenoptera.d1$cton_long+hymenoptera.d1$Ptot_nug+hymenoptera.d1$Po_nug+hymenoptera.d1$pH_nug+hymenoptera.d1$moist_nug+hymenoptera.d1$ps1_nug+hymenoptera.d1$ps2_nug+hymenoptera.d1$percc_nug+hymenoptera.d1$pomc_nug+hymenoptera.d1$cton_nug+hymenoptera.d1$Ptot_short+hymenoptera.d1$Po_short+hymenoptera.d1$pH_short+hymenoptera.d1$moist_short+hymenoptera.d1$ps1_short+hymenoptera.d1$percc_short+hymenoptera.d1$pomc_short+hymenoptera.d1$cton_short)
-
-tree.sel=ordiR2step(hel.rda.fulsoil.none,scope=formula(hel.rda.fulsoil.full),Pin=0.05,R2scope=TRUE)
-tree.sel
-
-##Just the variables forward selected
-hel.rda.fulsoil = rda(hymenoptera.d1[,5:54], hymenoptera.d1[,c(49,33,44,35,48,40)])
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:20], hymenoptera.d1[,30:54])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 ##Pitfall inverts by trees
-hel.rda.fulsoil = rda(hymenoptera.d1[,5:54],hymenoptera.d1[,63:97])
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:20],hymenoptera.d1[,63:97])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -1601,14 +1569,14 @@ all.pcnmvecs=all.pcnm1$vectors
 tree.hel.all.pcnm=cbind(hymenoptera.d1,all.pcnmvecs)
 names(tree.hel.all.pcnm)
 # Now run step 1, global analysis
-hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:54], tree.hel.all.pcnm[,99:135])
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:20], tree.hel.all.pcnm[,99:135])
 anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 ## Variance partitioning - Not needed because there's no pcnm effect
 
 ##INVERTS BY ECOSYSTEM
-hel.rda.fulsoil = rda(hymenoptera.d1[,5:54]~hymenoptera.d1$TerrType)
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:20]~hymenoptera.d1$TerrType)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -1617,13 +1585,13 @@ global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 ####CORE PLOTS####
 hymenoptera.d1=hymenoptera.d1.2[hymenoptera.d1.2$EP=="Core",]
 ##rda by soil
-hel.rda.fulsoil = rda(hymenoptera.d1[,5:54], hymenoptera.d1[,30:54])
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:20], hymenoptera.d1[,30:54])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
 
 ##Pitfall inverts by trees
-hel.rda.fulsoil = rda(hymenoptera.d1[,5:54],hymenoptera.d1[,c(63:97)])
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:20],hymenoptera.d1[,c(63:97)])
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
@@ -1638,7 +1606,7 @@ all.pcnmvecs=all.pcnm1$vectors
 tree.hel.all.pcnm=cbind(hymenoptera.d1,all.pcnmvecs)
 names(tree.hel.all.pcnm)
 # Now run step 1, global analysis
-hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:54], tree.hel.all.pcnm[,99:122])
+hel.rda.all.fulpcnm=rda(tree.hel.all.pcnm[,5:20], tree.hel.all.pcnm[,99:122])
 anova(hel.rda.all.fulpcnm)
 RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
@@ -1646,7 +1614,7 @@ global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 ## no variance partitioning needed because no significance/soil effect.
 
 ##INVERTS BY ECOSYSTEM
-hel.rda.fulsoil = rda(hymenoptera.d1[,5:54]~hymenoptera.d1$TerrType)
+hel.rda.fulsoil = rda(hymenoptera.d1[,5:20]~hymenoptera.d1$TerrType)
 anova(hel.rda.fulsoil)
 RsquareAdj(hel.rda.fulsoil)
 global.thresh=RsquareAdj(hel.rda.fulsoil)$adj.r.squared
