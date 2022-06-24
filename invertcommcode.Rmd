@@ -253,12 +253,29 @@ hb1=diversity(b1[8:158], index="shannon")
 hb2=diversity(b2[8:158], index="shannon")
 hb3=diversity(b3[8:158], index="shannon")
 hb4=diversity(b4[8:158], index="shannon")
-boxplot(Hbot,hb1, hb2, hb3, hb4, xlab="bottomland diversity", ylab="shannons diversity")
-mtext(side=1,at=1,"All Dates",las=2,line=1, srt=45)
-mtext(side=1,at=2,"6 Oct 2015",las=2,line=1, srt=45)
-mtext(side=1,at=3,"5 May 2016",las=2,line=1)
-mtext(side=1,at=4,"10 Aug 2016",las=2,line=1)
-mtext(side=1,at=5,"15 Oct 2016",las=2,line=1)
+boxplot(hb1, hb2, hb3, hb4, xlab="bottomland diversity", ylab="Shannon's Diversity", main="Bottomland")
+mtext(side=1,at=1,"6 Oct 2015",las=0,line=1, srt=45)
+mtext(side=1,at=2,"5 May 2016",las=0,line=1)
+mtext(side=1,at=3,"10 Aug 2016",las=0,line=1)
+mtext(side=1,at=4,"15 Oct 2016",las=0,line=1)
+
+##Let's make a nice boxplot in ggplot
+ggplot(decompk.row.ripup, aes(x=Species,y=as.numeric(as.character(decompk)),colour=LumpedTrans))+
+  geom_boxplot(position=position_dodge(0.9), size=1)+
+  #ggtitle("RipUp TerrTypexSpecies")+
+  theme_bw()+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        axis.text=element_text(size=16),
+        axis.title=element_text(size=20),
+        axis.title.x=element_blank(),
+        legend.position = "top",
+        axis.ticks.length = unit(-0.25,"cm"),
+        aspect.ratio = 0.75
+        )+
+  scale_color_manual(values=c("darkolivegreen3","cornsilk4","cornflowerblue"))+
+  ylab("Decay k")+
+  scale_y_continuous(limits=c(-6.5,0))
 
 
 srb1=specnumber(b1[8:158], MARGIN=1)
@@ -282,12 +299,11 @@ hr1=diversity(r1[8:158], index="shannon")
 hr2=diversity(r2[8:158], index="shannon")
 hr3=diversity(r3[8:158], index="shannon")
 hr4=diversity(r4[8:158], index="shannon")
-boxplot(Hrip, hr1, hr2, hr3, hr4, xlab="riparian diversity", ylab="shannons diversity")
-mtext(side=1,at=1,"All Dates",las=2,line=1, srt=45)
-mtext(side=1,at=2,"6 Oct 2015",las=2,line=1, srt=45)
-mtext(side=1,at=3,"5 May 2016",las=2,line=1)
-mtext(side=1,at=4,"10 Aug 2016",las=2,line=1)
-mtext(side=1,at=5,"15 Oct 2016",las=2,line=1)
+boxplot(hr1, hr2, hr3, hr4, xlab="riparian diversity", ylab="shannons diversity", main="Riparian")
+mtext(side=1,at=1,"6 Oct 2015",las=0,line=1, srt=45)
+mtext(side=1,at=2,"5 May 2016",las=0,line=1)
+mtext(side=1,at=3,"10 Aug 2016",las=0,line=1)
+mtext(side=1,at=4,"15 Oct 2016",las=0,line=1)
 
 
 srr1=specnumber(r1[8:158], MARGIN=1)
@@ -2899,6 +2915,16 @@ RsquareAdj(hel.rda.all.fulpcnm)
 global.thresh=RsquareAdj(hel.rda.all.fulpcnm)$adj.r.squared
 
 ## no variance partitioning needed because no significance/soil effect.
+
+## Variance partitioning
+varpart(tree.hel.all.pcnm[,8:12], tree.hel.all.pcnm[,c(30)], tree.hel.all.pcnm[,c(57:91)])
+## Check to see if it's significant when PCNM and soil come first.
+hel.rda.all.partpcnm=rda(tree.hel.all.pcnm[,8:12], tree.hel.all.pcnm[,c(91:93,97:98)], tree.hel.all.pcnm[,c(23,43,31)])
+anova(hel.rda.all.partpcnm)
+# Yes.
+hel.rda.all.partsoil=rda(tree.hel.all.pcnm[,8:12], tree.hel.all.pcnm[,c(23,43,31)], tree.hel.all.pcnm[,c(91:93,97:98)])
+anova(hel.rda.all.partsoil)
+# Yes.
 
 ##INVERTS BY ECOSYSTEM
 hel.rda.fulsoil = rda(aranaea.d3[,5:17]~aranaea.d3$TerrType)
